@@ -61,28 +61,28 @@
             <div class="col-md-3">
                 <div class="card text-center p-3">
                     <h5>数据总量</h5>
-                    <h3 class="text-primary">1.2TB</h3>
-                    <small>来自全国500+气象站</small>
+                    <h3 class="text-primary">2.8TB</h3>
+                    <small>来自全国1200+气象站</small>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card text-center p-3">
                     <h5>日新增数据</h5>
-                    <h3 class="text-primary">5GB</h3>
-                    <small>每分钟约3.5万条</small>
+                    <h3 class="text-primary">8.5GB</h3>
+                    <small>每分钟约5.9万条</small>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card text-center p-3">
                     <h5>处理节点</h5>
-                    <h3 class="text-primary">8个</h3>
+                    <h3 class="text-primary">12个</h3>
                     <small>Hadoop集群规模</small>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card text-center p-3">
                     <h5>预测准确率</h5>
-                    <h3 class="text-primary">92.5%</h3>
+                    <h3 class="text-primary">94.2%</h3>
                     <small>24小时预报准确度</small>
                 </div>
             </div>
@@ -93,7 +93,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header bg-white">
-                        <h5>全国气温变化趋势 (近7天)</h5>
+                        <h5>北京气温变化趋势 (近7天)</h5>
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
@@ -112,11 +112,11 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3">
                             <div>
-                                <i class="fas fa-sun weather-icon text-warning"></i>
+                                <i class="fas fa-cloud weather-icon text-secondary"></i>
                                 <span>北京</span>
                             </div>
                             <div>
-                                <strong>23°C</strong> | 晴
+                                <strong>5°C</strong> | 阴
                             </div>
                         </div>
                         <div class="d-flex justify-content-between mb-3">
@@ -125,25 +125,25 @@
                                 <span>上海</span>
                             </div>
                             <div>
-                                <strong>19°C</strong> | 小雨
+                                <strong>8°C</strong> | 小雨
                             </div>
                         </div>
                         <div class="d-flex justify-content-between mb-3">
                             <div>
-                                <i class="fas fa-cloud weather-icon text-secondary"></i>
+                                <i class="fas fa-sun weather-icon text-warning"></i>
                                 <span>广州</span>
                             </div>
                             <div>
-                                <strong>26°C</strong> | 多云
+                                <strong>18°C</strong> | 晴
                             </div>
                         </div>
                         <div class="d-flex justify-content-between">
                             <div>
-                                <i class="fas fa-bolt weather-icon text-danger"></i>
+                                <i class="fas fa-smog weather-icon text-muted"></i>
                                 <span>成都</span>
                             </div>
                             <div>
-                                <strong>20°C</strong> | 雷阵雨
+                                <strong>6°C</strong> | 雾
                             </div>
                         </div>
                     </div>
@@ -176,28 +176,28 @@
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <span>CPU使用率</span>
-                                <span>65%</span>
+                                <span>68%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar bg-primary" style="width: 65%"></div>
+                                <div class="progress-bar bg-primary" style="width: 68%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <span>内存使用率</span>
-                                <span>72%</span>
+                                <span>75%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar bg-info" style="width: 72%"></div>
+                                <div class="progress-bar bg-info" style="width: 75%"></div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <span>存储使用率</span>
-                                <span>58%</span>
+                                <span>62%</span>
                             </div>
                             <div class="progress" style="height: 10px;">
-                                <div class="progress-bar bg-success" style="width: 58%"></div>
+                                <div class="progress-bar bg-success" style="width: 62%"></div>
                             </div>
                         </div>
                         <hr>
@@ -206,7 +206,8 @@
                         <span class="badge bg-secondary me-2">master-02 (Standby)</span>
                         <span class="badge bg-primary me-2">worker-01</span>
                         <span class="badge bg-primary me-2">worker-02</span>
-                        <span class="badge bg-warning me-2">worker-03</span>
+                        <span class="badge bg-primary me-2">worker-03</span>
+                        <span class="badge bg-warning me-2">worker-04 (High Load)</span>
                     </div>
                 </div>
             </div>
@@ -267,16 +268,16 @@
     </div>
 
     <script>
-        // 气温变化趋势图
+        // 北京气温变化趋势图
         const tempCtx = document.getElementById('temperatureChart').getContext('2d');
         new Chart(tempCtx, {
             type: 'line',
             data: {
-                labels: ['10/16', '10/17', '10/18', '10/19', '10/20', '10/21', '10/22'],
+                labels: ['11/20', '11/21', '11/22', '11/23', '11/24', '11/25', '11/26'],
                 datasets: [
                     {
                         label: '最高气温 (°C)',
-                        data: [22, 24, 20, 18, 21, 23, 25],
+                        data: [8, 7, 6, 5, 4, 6, 7],
                         borderColor: '#e65151',
                         backgroundColor: 'rgba(230, 81, 81, 0.1)',
                         borderWidth: 2,
@@ -284,7 +285,7 @@
                     },
                     {
                         label: '最低气温 (°C)',
-                        data: [15, 16, 14, 12, 13, 15, 17],
+                        data: [2, 1, 0, -1, -2, 0, 1],
                         borderColor: '#42a5f5',
                         backgroundColor: 'rgba(66, 165, 245, 0.1)',
                         borderWidth: 2,
@@ -302,6 +303,15 @@
                             }
                         }
                     }
+                },
+                scales: {
+                    y: {
+                        min: -5,
+                        max: 10,
+                        ticks: {
+                            stepSize: 2
+                        }
+                    }
                 }
             }
         });
@@ -313,7 +323,7 @@
             data: {
                 labels: ['温度数据', '湿度数据', '气压数据', '风速数据', '降水量数据'],
                 datasets: [{
-                    data: [35, 25, 15, 15, 10],
+                    data: [38, 27, 15, 12, 8],
                     backgroundColor: [
                         '#1e88e5',
                         '#0d47a1',
@@ -328,6 +338,17 @@
                 plugins: {
                     legend: {
                         position: 'right'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${value}万条 (${percentage}%)`;
+                            }
+                        }
                     }
                 }
             }
