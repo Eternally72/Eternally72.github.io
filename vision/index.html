@@ -54,7 +54,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            margin: 20px 0;
+            margin: 40px 0 20px 0;
         }
         .chart-container {
             flex: 1;
@@ -78,6 +78,7 @@
             border-radius: 5px;
             overflow: hidden;
             font-size: 14px;
+            margin-top: 20px;
         }
         .movie-table th {
             background-color: #007722;
@@ -132,17 +133,6 @@
         <strong>集群状态：</strong> 运行中 | <strong>节点数：</strong> 3 (1 NameNode + 2 DataNodes) | <strong>数据量：</strong> 约50万条记录
     </div>
 
-    <div class="visualization">
-        <div class="chart-container">
-            <h3 class="chart-title">TOP 20电影评分对比</h3>
-            <canvas id="barChart"></canvas>
-        </div>
-        <div class="chart-container">
-            <h3 class="chart-title">电影年代分布</h3>
-            <canvas id="pieChart"></canvas>
-        </div>
-    </div>
-
     <table class="movie-table">
         <thead>
             <tr>
@@ -157,6 +147,17 @@
             <!-- 电影数据将通过JavaScript动态加载 -->
         </tbody>
     </table>
+
+    <div class="visualization">
+        <div class="chart-container">
+            <h3 class="chart-title">TOP 20电影评分对比</h3>
+            <canvas id="barChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h3 class="chart-title">电影年代分布</h3>
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
 
     <div class="footer">
         © 2025 Hadoop可视化分析平台 | 数据更新时间: <span id="update-time"></span>
