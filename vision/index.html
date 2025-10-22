@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadoop & ZooKeeper 数据可视化分析平台</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+        .dashboard-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: none;
+        }
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            font-weight: bold;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        .chart-container {
+            height: 300px;
+            width: 100%;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+        }
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1e3c72;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+        .cluster-status {
+            padding: 10px;
+        }
+        .node {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 12px;
+            border-radius: 5px;
+            background-color: #e9f5ff;
+            font-size: 14px;
+        }
+        .node.active {
+            background-color: #d4edda;
+        }
+        .node.warning {
+            background-color: #fff3cd;
+        }
+        .node.danger {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-chart-line"></i> Hadoop & ZooKeeper 数据可视化分析平台</h1>
+            <p class="mb-0">实时监控和分析大数据平台运行状态与数据趋势</p>
+        </div>
+
+        <div class="row">
+            <!-- 统计卡片 -->
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-value" id="total-data">15.7TB</div>
+                    <div class="stat-label">总数据量</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-value" id="daily-process">284M</div>
+                    <div class="stat-label">日处理记录</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-value" id="active-nodes">24</div>
+                    <div class="stat-label">活跃节点</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-value" id="job-success">98.7%</div>
+                    <div class="stat-label">作业成功率</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- 数据趋势图 -->
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        数据量增长趋势 (最近30天)
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="dataGrowthChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 集群状态 -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        ZooKeeper 集群状态
+                    </div>
+                    <div class="card-body cluster-status">
+                        <div class="node active">zk-node-01 (Leader)</div>
+                        <div class="node active">zk-node-02 (Follower)</div>
+                        <div class="node active">zk-node-03 (Follower)</div>
+                        <div class="node active">zk-node-04 (Observer)</div>
+                        <div class="node warning">zk-node-05 (Syncing)</div>
+                        
+                        <hr>
+                        <h6>集群健康指标</h6>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-muted">95% 健康度</small>
+                        
+                        <h6 class="mt-3">平均延迟</h6>
+                        <div class="progress mb-2">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small class="text-muted">25ms 平均延迟</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- 作业类型分布 -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Hadoop 作业类型分布
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="jobTypeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 数据存储分布 -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        数据存储分布 (按类型)
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <div id="storageDistributionChart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- 节点资源使用 -->
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        节点资源使用情况 (Top 10)
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <div id="nodeResourceChart" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 数据增长趋势图
+        const dataGrowthCtx = document.getElementById('dataGrowthChart').getContext('2d');
+        const dataGrowthChart = new Chart(dataGrowthCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 30}, (_, i) => `${i+1}日`),
+                datasets: [{
+                    label: '数据量 (TB)',
+                    data: [12.1, 12.3, 12.5, 12.7, 12.9, 13.1, 13.3, 13.5, 13.7, 13.9, 
+                           14.1, 14.3, 14.5, 14.6, 14.8, 14.9, 15.0, 15.1, 15.2, 15.3, 
+                           15.4, 15.4, 15.5, 15.5, 15.6, 15.6, 15.7, 15.7, 15.7, 15.7],
+                    borderColor: '#1e3c72',
+                    backgroundColor: 'rgba(30, 60, 114, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}TB`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: '数据量 (TB)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // 作业类型分布图
+        const jobTypeCtx = document.getElementById('jobTypeChart').getContext('2d');
+        const jobTypeChart = new Chart(jobTypeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['MapReduce', 'Spark', 'Hive', 'Pig', 'HBase', '其他'],
+                datasets: [{
+                    data: [35, 25, 20, 10, 5, 5],
+                    backgroundColor: [
+                        '#1e3c72',
+                        '#2a5298',
+                        '#4a6fbb',
+                        '#7b9fd7',
+                        '#a8c1e8',
+                        '#d6e3f5'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const value = context.raw;
+                                const percentage = Math.round((value / total) * 100);
+                                return `${context.label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 数据存储分布图 (使用ECharts)
+        const storageDistributionChart = echarts.init(document.getElementById('storageDistributionChart'));
+        storageDistributionChart.setOption({
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                right: 10,
+                top: 'center',
+                data: ['结构化数据', '半结构化数据', '非结构化数据', '日志数据', '其他']
+            },
+            series: [
+                {
+                    name: '存储分布',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    },
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '18',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        { value: 45, name: '结构化数据' },
+                        { value: 20, name: '半结构化数据' },
+                        { value: 25, name: '非结构化数据' },
+                        { value: 8, name: '日志数据' },
+                        { value: 2, name: '其他' }
+                    ]
+                }
+            ]
+        });
+
+        // 节点资源使用图 (使用ECharts)
+        const nodeResourceChart = echarts.init(document.getElementById('nodeResourceChart'));
+        nodeResourceChart.setOption({
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'shadow'
+                }
+            },
+            legend: {
+                data: ['CPU使用率', '内存使用率', '磁盘使用率']
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'value',
+                boundaryGap: [0, 0.01]
+            },
+            yAxis: {
+                type: 'category',
+                data: ['node-01', 'node-02', 'node-03', 'node-04', 'node-05', 
+                       'node-06', 'node-07', 'node-08', 'node-09', 'node-10']
+            },
+            series: [
+                {
+                    name: 'CPU使用率',
+                    type: 'bar',
+                    data: [78, 65, 82, 74, 68, 72, 79, 81, 75, 70],
+                    itemStyle: {
+                        color: '#1e3c72'
+                    }
+                },
+                {
+                    name: '内存使用率',
+                    type: 'bar',
+                    data: [65, 58, 72, 68, 62, 65, 70, 75, 68, 60],
+                    itemStyle: {
+                        color: '#4a6fbb'
+                    }
+                },
+                {
+                    name: '磁盘使用率',
+                    type: 'bar',
+                    data: [45, 52, 48, 55, 50, 42, 58, 60, 52, 48],
+                    itemStyle: {
+                        color: '#7b9fd7'
+                    }
+                }
+            ]
+        });
+
+        // 窗口大小变化时重新调整图表大小
+        window.addEventListener('resize', function() {
+            storageDistributionChart.resize();
+            nodeResourceChart.resize();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
