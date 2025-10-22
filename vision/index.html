@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>豆瓣电影评分排行榜 - Hadoop大数据分析平台</title>
+    <title>豆瓣电影评分排行榜 - Hadoop小型集群版</title>
     <style>
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: #333;
-            max-width: 1200px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
@@ -17,91 +17,54 @@
         .header {
             background: linear-gradient(135deg, #007722, #006666);
             color: white;
-            padding: 25px;
+            padding: 20px;
             border-radius: 5px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
-        }
-        .header::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 150px;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23ffffff20" d="M30,10L50,30L70,10L90,30L70,50L90,70L70,90L50,70L30,90L10,70L30,50L10,30L30,10Z"/></svg>') no-repeat;
-            background-size: contain;
-            opacity: 0.2;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         h1 {
             margin: 0;
-            font-size: 32px;
+            font-size: 24px;
         }
         .subtitle {
-            font-size: 16px;
+            font-size: 14px;
             opacity: 0.9;
-            margin-top: 10px;
+            margin-top: 8px;
         }
         .hadoop-badge {
             display: inline-block;
             background-color: #FF9900;
             color: white;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: bold;
-            margin-left: 10px;
+            margin-left: 8px;
             vertical-align: middle;
         }
-        .data-process {
-            background-color: #f8f8f8;
-            border-left: 4px solid #007722;
-            padding: 15px;
-            margin-bottom: 25px;
-            border-radius: 0 5px 5px 0;
+        .cluster-info {
+            background-color: #f0f0f0;
+            padding: 12px;
+            border-radius: 5px;
+            margin: 15px 0;
+            font-size: 13px;
         }
-        .process-steps {
+        .cluster-nodes {
             display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-            flex-wrap: wrap;
+            justify-content: space-around;
+            margin: 10px 0;
         }
-        .process-step {
-            flex: 1;
-            min-width: 150px;
+        .node {
             text-align: center;
-            padding: 15px;
-            margin: 5px;
+            padding: 8px;
             background-color: white;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            position: relative;
+            width: 30%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
-        .process-step::after {
-            content: "→";
-            position: absolute;
-            right: -15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-        }
-        .process-step:last-child::after {
-            display: none;
-        }
-        .step-icon {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #007722;
-        }
-        .step-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .step-desc {
-            font-size: 12px;
-            color: #666;
+        .node.active {
+            background-color: #e6f7e6;
+            border: 1px solid #007722;
         }
         .movie-table {
             width: 100%;
@@ -110,15 +73,16 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             border-radius: 5px;
             overflow: hidden;
+            font-size: 14px;
         }
         .movie-table th {
             background-color: #007722;
             color: white;
-            padding: 15px;
+            padding: 12px;
             text-align: left;
         }
         .movie-table td {
-            padding: 15px;
+            padding: 12px;
             border-bottom: 1px solid #eee;
         }
         .movie-table tr:last-child td {
@@ -134,93 +98,58 @@
         .rank {
             font-weight: bold;
             color: #333;
-            width: 50px;
+            width: 40px;
         }
+        .node-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .node-1 { background-color: #FF9900; }
+        .node-2 { background-color: #007722; }
+        .node-3 { background-color: #3366CC; }
         .footer {
-            margin-top: 40px;
+            margin-top: 20px;
             text-align: center;
-            font-size: 13px;
+            font-size: 12px;
             color: #999;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        .data-source {
-            margin-top: 30px;
-            font-size: 14px;
-            color: #666;
-            background-color: #f8f8f8;
-            padding: 15px;
-            border-radius: 5px;
-        }
-        .hadoop-cluster {
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 20px 0;
-            font-family: monospace;
-            font-size: 14px;
-            line-height: 1.5;
-            overflow-x: auto;
-        }
-        .cluster-line {
-            margin-bottom: 5px;
-        }
-        .cluster-line::before {
-            content: "$ ";
-            color: #FF9900;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>豆瓣电影评分大数据分析平台 <span class="hadoop-badge">Hadoop</span></h1>
-        <div class="subtitle">基于Hadoop生态系统处理的海量电影评分数据分析</div>
+        <h1>豆瓣电影评分分析 <span class="hadoop-badge">Hadoop 3节点集群</span></h1>
+        <div class="subtitle">基于小型Hadoop集群处理的电影评分数据分析</div>
     </div>
 
-    <div class="data-process">
-        <h3>大数据处理流程</h3>
-        <div class="process-steps">
-            <div class="process-step">
-                <div class="step-icon">📊</div>
-                <div class="step-title">数据采集</div>
-                <div class="step-desc">从豆瓣API获取原始数据</div>
+    <div class="cluster-info">
+        <strong>集群状态：</strong> 运行中 | <strong>节点数：</strong> 3 (1 NameNode + 2 DataNodes) | <strong>数据量：</strong> 约50万条记录
+        <div class="cluster-nodes">
+            <div class="node active">
+                <strong>NameNode</strong><br>
+                master-node
             </div>
-            <div class="process-step">
-                <div class="step-icon">🧹</div>
-                <div class="step-title">数据清洗</div>
-                <div class="step-desc">使用MapReduce处理脏数据</div>
+            <div class="node active">
+                <strong>DataNode</strong><br>
+                worker-node1
             </div>
-            <div class="process-step">
-                <div class="step-icon">🔍</div>
-                <div class="step-title">数据分析</div>
-                <div class="step-desc">Hive进行数据聚合分析</div>
-            </div>
-            <div class="process-step">
-                <div class="step-icon">📈</div>
-                <div class="step-title">数据可视化</div>
-                <div class="step-desc">结果呈现与交互展示</div>
+            <div class="node active">
+                <strong>DataNode</strong><br>
+                worker-node2
             </div>
         </div>
-    </div>
-
-    <div class="hadoop-cluster">
-        <div class="cluster-line">hadoop fs -put douban_data /input/movies</div>
-        <div class="cluster-line">hadoop jar movie_analysis.jar com.douban.MovieAnalysis /input/movies /output/ratings</div>
-        <div class="cluster-line">hive -e "CREATE TABLE movie_ratings AS SELECT * FROM movie_analysis_results"</div>
-        <div class="cluster-line">sqoop export --connect jdbc:mysql://db-server/douban --table top_movies --export-dir /output/ratings</div>
     </div>
 
     <table class="movie-table">
         <thead>
             <tr>
-                <th width="50">排名</th>
+                <th width="40">排名</th>
                 <th>电影名称</th>
-                <th width="100">评分</th>
-                <th width="120">评价人数</th>
+                <th width="80">评分</th>
                 <th width="100">年份</th>
-                <th>导演</th>
-                <th width="120">数据处理节点</th>
+                <th width="120">处理节点</th>
             </tr>
         </thead>
         <tbody id="movie-list">
@@ -228,46 +157,106 @@
         </tbody>
     </table>
 
-    <div class="data-source">
-        <h3>Hadoop数据处理详情</h3>
-        <p><strong>集群配置：</strong> 8节点Hadoop集群 (1 NameNode + 7 DataNodes)</p>
-        <p><strong>数据规模：</strong> 原始数据量 2.7TB，处理后数据 450GB</p>
-        <p><strong>处理时间：</strong> MapReduce作业耗时 23分钟 (平均)</p>
-        <p><strong>技术栈：</strong> Hadoop 3.3.4 + Hive 3.1.3 + Sqoop 1.4.7</p>
-    </div>
-
     <div class="footer">
-        © 2025 Hadoop大数据分析平台 | 本页面数据基于豆瓣电影数据通过Hadoop集群处理生成
+        © 2025 Hadoop小型集群分析平台 | 数据更新时间: <span id="update-time"></span>
     </div>
 
     <script>
-        // 模拟从Hadoop处理后的数据存储中获取的电影数据
+        // 模拟从Hadoop集群处理后的电影数据 (100条)
         const movieData = [
-            { name: "肖申克的救赎", rating: 9.7, votes: 2500000, year: 1994, director: "弗兰克·德拉邦特", node: "datanode3" },
-            { name: "霸王别姬", rating: 9.6, votes: 1800000, year: 1993, director: "陈凯歌", node: "datanode5" },
-            { name: "阿甘正传", rating: 9.5, votes: 1900000, year: 1994, director: "罗伯特·泽米吉斯", node: "datanode2" },
-            { name: "这个杀手不太冷", rating: 9.4, votes: 2000000, year: 1994, director: "吕克·贝松", node: "datanode7" },
-            { name: "泰坦尼克号", rating: 9.4, votes: 1800000, year: 1997, director: "詹姆斯·卡梅隆", node: "datanode1" },
-            { name: "美丽人生", rating: 9.5, votes: 1200000, year: 1997, director: "罗伯托·贝尼尼", node: "datanode4" },
-            { name: "千与千寻", rating: 9.4, votes: 1900000, year: 2001, director: "宫崎骏", node: "datanode6" },
-            { name: "辛德勒的名单", rating: 9.5, votes: 900000, year: 1993, director: "史蒂文·斯皮尔伯格", node: "datanode3" },
-            { name: "盗梦空间", rating: 9.3, votes: 1800000, year: 2010, director: "克里斯托弗·诺兰", node: "datanode5" },
-            { name: "忠犬八公的故事", rating: 9.4, votes: 1100000, year: 2009, director: "莱塞·霍尔斯道姆", node: "datanode2" },
-            { name: "海上钢琴师", rating: 9.3, votes: 1300000, year: 1998, director: "朱塞佩·托纳多雷", node: "datanode7" },
-            { name: "楚门的世界", rating: 9.3, votes: 1300000, year: 1998, director: "彼得·威尔", node: "datanode1" },
-            { name: "三傻大闹宝莱坞", rating: 9.2, votes: 1600000, year: 2009, director: "拉吉库马尔·希拉尼", node: "datanode4" },
-            { name: "机器人总动员", rating: 9.3, votes: 1100000, year: 2008, director: "安德鲁·斯坦顿", node: "datanode6" },
-            { name: "放牛班的春天", rating: 9.3, votes: 1000000, year: 2004, director: "克里斯托夫·巴拉蒂", node: "datanode3" },
-            { name: "大话西游之大圣娶亲", rating: 9.2, votes: 1400000, year: 1995, director: "刘镇伟", node: "datanode5" },
-            { name: "疯狂动物城", rating: 9.2, votes: 1500000, year: 2016, director: "拜伦·霍华德", node: "datanode2" },
-            { name: "无间道", rating: 9.2, votes: 1200000, year: 2002, director: "刘伟强", node: "datanode7" },
-            { name: "熔炉", rating: 9.3, votes: 800000, year: 2011, director: "黄东赫", node: "datanode1" },
-            { name: "教父", rating: 9.3, votes: 800000, year: 1972, director: "弗朗西斯·福特·科波拉", node: "datanode4" },
-            { name: "当幸福来敲门", rating: 9.1, votes: 1300000, year: 2006, director: "加布里尔·穆奇诺", node: "datanode6" },
-            { name: "龙猫", rating: 9.2, votes: 1000000, year: 1988, director: "宫崎骏", node: "datanode3" },
-            { name: "怦然心动", rating: 9.1, votes: 1400000, year: 2010, director: "罗伯·莱纳", node: "datanode5" },
-            { name: "控方证人", rating: 9.6, votes: 400000, year: 1957, director: "比利·怀德", node: "datanode2" },
-            { name: "蝙蝠侠：黑暗骑士", rating: 9.2, votes: 900000, year: 2008, director: "克里斯托弗·诺兰", node: "datanode7" }
+            { name: "肖申克的救赎", rating: 9.7, year: 1994, node: 1 },
+            { name: "霸王别姬", rating: 9.6, year: 1993, node: 2 },
+            { name: "阿甘正传", rating: 9.5, year: 1994, node: 3 },
+            { name: "这个杀手不太冷", rating: 9.4, year: 1994, node: 1 },
+            { name: "泰坦尼克号", rating: 9.4, year: 1997, node: 2 },
+            { name: "美丽人生", rating: 9.5, year: 1997, node: 3 },
+            { name: "千与千寻", rating: 9.4, year: 2001, node: 1 },
+            { name: "辛德勒的名单", rating: 9.5, year: 1993, node: 2 },
+            { name: "盗梦空间", rating: 9.3, year: 2010, node: 3 },
+            { name: "忠犬八公的故事", rating: 9.4, year: 2009, node: 1 },
+            { name: "海上钢琴师", rating: 9.3, year: 1998, node: 2 },
+            { name: "楚门的世界", rating: 9.3, year: 1998, node: 3 },
+            { name: "三傻大闹宝莱坞", rating: 9.2, year: 2009, node: 1 },
+            { name: "机器人总动员", rating: 9.3, year: 2008, node: 2 },
+            { name: "放牛班的春天", rating: 9.3, year: 2004, node: 3 },
+            { name: "大话西游之大圣娶亲", rating: 9.2, year: 1995, node: 1 },
+            { name: "疯狂动物城", rating: 9.2, year: 2016, node: 2 },
+            { name: "无间道", rating: 9.2, year: 2002, node: 3 },
+            { name: "熔炉", rating: 9.3, year: 2011, node: 1 },
+            { name: "教父", rating: 9.3, year: 1972, node: 2 },
+            { name: "当幸福来敲门", rating: 9.1, year: 2006, node: 3 },
+            { name: "龙猫", rating: 9.2, year: 1988, node: 1 },
+            { name: "怦然心动", rating: 9.1, year: 2010, node: 2 },
+            { name: "控方证人", rating: 9.6, year: 1957, node: 3 },
+            { name: "蝙蝠侠：黑暗骑士", rating: 9.2, year: 2008, node: 1 },
+            { name: "活着", rating: 9.3, year: 1994, node: 2 },
+            { name: "乱世佳人", rating: 9.3, year: 1939, node: 3 },
+            { name: "寻梦环游记", rating: 9.1, year: 2017, node: 1 },
+            { name: "摔跤吧！爸爸", rating: 9.0, year: 2016, node: 2 },
+            { name: "指环王3：王者无敌", rating: 9.2, year: 2003, node: 3 },
+            { name: "天空之城", rating: 9.1, year: 1986, node: 1 },
+            { name: "鬼子来了", rating: 9.3, year: 2000, node: 2 },
+            { name: "素媛", rating: 9.3, year: 2013, node: 3 },
+            { name: "十二怒汉", rating: 9.4, year: 1957, node: 1 },
+            { name: "哈尔的移动城堡", rating: 9.1, year: 2004, node: 2 },
+            { name: "少年派的奇幻漂流", rating: 9.1, year: 2012, node: 3 },
+            { name: "天堂电影院", rating: 9.2, year: 1988, node: 1 },
+            { name: "大闹天宫", rating: 9.4, year: 1961, node: 2 },
+            { name: "搏击俱乐部", rating: 9.0, year: 1999, node: 3 },
+            { name: "罗马假日", rating: 9.1, year: 1953, node: 1 },
+            { name: "闻香识女人", rating: 9.1, year: 1992, node: 2 },
+            { name: "辩护人", rating: 9.2, year: 2013, node: 3 },
+            { name: "死亡诗社", rating: 9.1, year: 1989, node: 1 },
+            { name: "窃听风暴", rating: 9.2, year: 2006, node: 2 },
+            { name: "两杆大烟枪", rating: 9.1, year: 1998, node: 3 },
+            { name: "飞越疯人院", rating: 9.1, year: 1975, node: 1 },
+            { name: "教父2", rating: 9.3, year: 1974, node: 2 },
+            { name: "指环王2：双塔奇兵", rating: 9.1, year: 2002, node: 3 },
+            { name: "指环王1：魔戒再现", rating: 9.0, year: 2001, node: 1 },
+            { name: "V字仇杀队", rating: 9.0, year: 2005, node: 2 },
+            { name: "钢琴家", rating: 9.2, year: 2002, node: 3 },
+            { name: "美国往事", rating: 9.2, year: 1984, node: 1 },
+            { name: "黑客帝国", rating: 9.0, year: 1999, node: 2 },
+            { name: "狮子王", rating: 9.1, year: 1994, node: 3 },
+            { name: "沉默的羔羊", rating: 9.0, year: 1991, node: 1 },
+            { name: "小鞋子", rating: 9.2, year: 1997, node: 2 },
+            { name: "拯救大兵瑞恩", rating: 9.0, year: 1998, node: 3 },
+            { name: "致命魔术", rating: 9.0, year: 2006, node: 1 },
+            { name: "七宗罪", rating: 9.0, year: 1995, node: 2 },
+            { name: "被嫌弃的松子的一生", rating: 9.1, year: 2006, node: 3 },
+            { name: "萤火虫之墓", rating: 9.1, year: 1988, node: 1 },
+            { name: "天使爱美丽", rating: 9.0, year: 2001, node: 2 },
+            { name: "红辣椒", rating: 9.0, year: 2006, node: 3 },
+            { name: "幽灵公主", rating: 9.1, year: 1997, node: 1 },
+            { name: "阳光灿烂的日子", rating: 9.1, year: 1994, node: 2 },
+            { name: "未麻的部屋", rating: 9.0, year: 1997, node: 3 },
+            { name: "情书", rating: 9.0, year: 1995, node: 1 },
+            { name: "第六感", rating: 9.0, year: 1999, node: 2 },
+            { name: "东京物语", rating: 9.2, year: 1953, node: 3 },
+            { name: "爱在黎明破晓前", rating: 9.0, year: 1995, node: 1 },
+            { name: "蝴蝶效应", rating: 9.0, year: 2004, node: 2 },
+            { name: "断背山", rating: 9.0, year: 2005, node: 3 },
+            { name: "告白", rating: 9.0, year: 2010, node: 1 },
+            { name: "玛丽和马克思", rating: 9.0, year: 2009, node: 2 },
+            { name: "西西里的美丽传说", rating: 9.0, year: 2000, node: 3 },
+            { name: "一一", rating: 9.1, year: 2000, node: 1 },
+            { name: "入殓师", rating: 9.0, year: 2008, node: 2 },
+            { name: "狩猎", rating: 9.1, year: 2012, node: 3 },
+            { name: "超脱", rating: 9.0, year: 2011, node: 1 },
+            { name: "小森林 夏秋篇", rating: 9.0, year: 2014, node: 2 },
+            { name: "请以你的名字呼唤我", rating: 9.0, year: 2017, node: 3 },
+            { name: "布达佩斯大饭店", rating: 9.0, year: 2014, node: 1 },
+            { name: "你的名字。", rating: 9.0, year: 2016, node: 2 },
+            { name: "海边的曼彻斯特", rating: 9.0, year: 2016, node: 3 },
+            { name: "绿皮书", rating: 9.0, year: 2018, node: 1 },
+            { name: "寄生虫", rating: 9.0, year: 2019, node: 2 },
+            { name: "小丑", rating: 9.0, year: 2019, node: 3 },
+            { name: "心灵奇旅", rating: 9.0, year: 2020, node: 1 },
+            { name: "困在时间里的父亲", rating: 9.0, year: 2020, node: 2 },
+            { name: "驾驶我的车", rating: 9.0, year: 2021, node: 3 },
+            { name: "西线无战事", rating: 9.0, year: 2022, node: 1 },
+            { name: "奥本海默", rating: 9.0, year: 2023, node: 2 },
+            { name: "坠落的审判", rating: 9.0, year: 2023, node: 3 }
         ];
 
         // 按评分从高到低排序
@@ -281,10 +270,8 @@
                 <td class="rank">${index + 1}</td>
                 <td>${movie.name}</td>
                 <td class="rating">${movie.rating}</td>
-                <td>${movie.votes.toLocaleString()}</td>
                 <td>${movie.year}</td>
-                <td>${movie.director}</td>
-                <td>${movie.node}</td>
+                <td><span class="node-indicator node-${movie.node}"></span> worker-node${movie.node}</td>
             `;
             movieList.appendChild(row);
         });
@@ -300,10 +287,10 @@
         });
 
         // 模拟从Hadoop集群获取数据
-        console.log("正在从Hadoop集群获取最新分析结果...");
-        console.log("连接HDFS...");
-        console.log("读取/output/movie_ratings/part-r-00000...");
-        console.log("数据加载完成");
+        console.log("正在从3节点Hadoop集群获取数据...");
+        console.log("连接HDFS... master-node:9000");
+        console.log("读取/output/douban_top100/part-r-00000...");
+        console.log("数据加载完成，共100条记录");
     </script>
 </body>
 </html>
