@@ -3,387 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>气象大数据分析平台</title>
+    <title>气象大数据分析平台 - 白俊</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #1E88E5;
-            --secondary-color: #0D47A1;
-            --success-color: #43A047;
-            --warning-color: #FB8C00;
-            --danger-color: #E53935;
-        }
-        
         body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background-color: #f5f7fa;
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f0f2f5;
             padding: 20px;
         }
-        
-        .dashboard-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        .header {
+            background: linear-gradient(135deg, #1e88e5, #0d47a1);
             color: white;
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        
         .card {
             border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             margin-bottom: 20px;
-            border: none;
-            transition: all 0.3s;
         }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-        }
-        
-        .card-header {
-            background-color: #fff;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            font-weight: bold;
-            border-radius: 10px 10px 0 0 !important;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
         .chart-container {
             height: 300px;
             width: 100%;
         }
-        
-        .stat-card {
-            text-align: center;
-            padding: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 4px;
-            height: 100%;
-            background-color: var(--primary-color);
-        }
-        
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-        
-        .stat-label {
-            color: #6c757d;
-            font-size: 14px;
-        }
-        
-        .stat-trend {
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        
-        .trend-up {
-            color: var(--success-color);
-        }
-        
-        .trend-down {
-            color: var(--danger-color);
-        }
-        
-        .cluster-status {
-            padding: 10px;
-        }
-        
-        .node {
-            display: inline-block;
-            margin: 5px;
-            padding: 8px 12px;
-            border-radius: 5px;
-            background-color: #e9f5ff;
-            font-size: 14px;
-            position: relative;
-            padding-left: 30px;
-        }
-        
-        .node::before {
-            content: '';
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: #ccc;
-        }
-        
-        .node.active::before {
-            background-color: var(--success-color);
-        }
-        
-        .node.warning::before {
-            background-color: var(--warning-color);
-        }
-        
-        .node.danger::before {
-            background-color: var(--danger-color);
-        }
-        
         .weather-icon {
             font-size: 24px;
-            margin-right: 10px;
+            margin-right: 5px;
         }
-        
-        .weather-card {
-            text-align: center;
+        .developer-info {
+            background-color: #e3f2fd;
             padding: 15px;
-        }
-        
-        .weather-temp {
-            font-size: 36px;
-            font-weight: bold;
-            color: var(--primary-color);
-        }
-        
-        .weather-desc {
-            color: #6c757d;
-            margin-top: 5px;
-        }
-        
-        .city-selector {
-            margin-bottom: 15px;
-        }
-        
-        .badge-hadoop {
-            background-color: #FF6D00;
-            color: white;
-        }
-        
-        .badge-zookeeper {
-            background-color: #5C6BC0;
-            color: white;
-        }
-        
-        .refresh-btn {
-            cursor: pointer;
-            color: var(--primary-color);
-            font-size: 16px;
-        }
-        
-        .time-display {
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-        }
-        
-        .map-container {
-            height: 400px;
-            width: 100%;
-            background-color: #e9f5ff;
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .map-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="dashboard-header">
-            <div>
-                <h1><i class="fas fa-cloud-sun"></i> 气象大数据分析平台</h1>
-                <p class="mb-0">基于Hadoop和ZooKeeper的实时气象数据分析与预测系统</p>
-            </div>
-            <div class="time-display" id="current-time"></div>
+    <div class="container">
+        <!-- 开发者信息 -->
+        <div class="developer-info">
+            <h4>开发者信息</h4>
+            <p><strong>姓名</strong>: 白俊</p>
+            <p><strong>学号</strong>: 23281295</p>
+            <p><strong>项目</strong>: 基于Hadoop的气象数据分析平台</p>
+        </div>
+
+        <!-- 平台标题 -->
+        <div class="header">
+            <h1><i class="fas fa-cloud-sun"></i> 气象大数据分析平台</h1>
+            <p>基于Hadoop和ZooKeeper的气象数据处理与分析系统</p>
         </div>
 
         <div class="row">
-            <!-- 统计卡片 -->
+            <!-- 数据概览 -->
             <div class="col-md-3">
-                <div class="card stat-card">
-                    <div class="stat-value">1.2<span style="font-size: 16px">PB</span></div>
-                    <div class="stat-label">气象数据总量</div>
-                    <div class="stat-trend trend-up"><i class="fas fa-caret-up"></i> 每天新增50TB</div>
+                <div class="card text-center p-3">
+                    <h5>数据总量</h5>
+                    <h3 class="text-primary">1.2TB</h3>
+                    <small>来自全国500+气象站</small>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card stat-card">
-                    <div class="stat-value">3.5<span style="font-size: 16px">M</span></div>
-                    <div class="stat-label">气象站实时数据点</div>
-                    <div class="stat-trend trend-up"><i class="fas fa-caret-up"></i> 新增12%站点</div>
+                <div class="card text-center p-3">
+                    <h5>日新增数据</h5>
+                    <h3 class="text-primary">5GB</h3>
+                    <small>每分钟约3.5万条</small>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card stat-card">
-                    <div class="stat-value">98.7<span style="font-size: 16px">%</span></div>
-                    <div class="stat-label">预测准确率</div>
-                    <div class="stat-trend trend-up"><i class="fas fa-caret-up"></i> 比上月提高1.2%</div>
+                <div class="card text-center p-3">
+                    <h5>处理节点</h5>
+                    <h3 class="text-primary">8个</h3>
+                    <small>Hadoop集群规模</small>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="card stat-card">
-                    <div class="stat-value">2.3<span style="font-size: 16px">ms</span></div>
-                    <div class="stat-label">平均处理延迟</div>
-                    <div class="stat-trend trend-down"><i class="fas fa-caret-down"></i> 优化0.5ms</div>
+                <div class="card text-center p-3">
+                    <h5>预测准确率</h5>
+                    <h3 class="text-primary">92.5%</h3>
+                    <small>24小时预报准确度</small>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <!-- 气象数据地图 -->
+            <!-- 气温变化趋势 -->
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">
-                        全国气象数据实时分布
-                        <span class="refresh-btn"><i class="fas fa-sync-alt"></i> 刷新</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="map-container">
-                            <!-- 这里实际应用中会嵌入地图组件 -->
-                            <img src="https://mapsvg.com/static/maps/geo-calibrated/china.svg" style="width: 100%; height: 100%; object-fit: cover;">
-                            <div class="map-overlay">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <i class="fas fa-sun weather-icon" style="color: #FFC107;"></i>
-                                        <span>晴天: 32%地区</span>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <i class="fas fa-cloud weather-icon" style="color: #9E9E9E;"></i>
-                                        <span>多云: 28%地区</span>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <i class="fas fa-cloud-rain weather-icon" style="color: #2196F3;"></i>
-                                        <span>降雨: 25%地区</span>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <i class="fas fa-bolt weather-icon" style="color: #FF9800;"></i>
-                                        <span>雷暴: 15%地区</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 集群状态 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        Hadoop & ZooKeeper 集群状态
-                        <span class="badge bg-success">运行正常</span>
-                    </div>
-                    <div class="card-body cluster-status">
-                        <h6>Hadoop 集群</h6>
-                        <div class="node active">nn-01 (NameNode)</div>
-                        <div class="node active">nn-02 (Standby)</div>
-                        <div class="node active">dn-01 (DataNode)</div>
-                        <div class="node active">dn-02 (DataNode)</div>
-                        <div class="node active">dn-03 (DataNode)</div>
-                        <div class="node warning">dn-04 (High Load)</div>
-                        
-                        <h6 class="mt-3">ZooKeeper 集群</h6>
-                        <div class="node active">zk-01 (Leader)</div>
-                        <div class="node active">zk-02 (Follower)</div>
-                        <div class="node active">zk-03 (Follower)</div>
-                        
-                        <hr>
-                        
-                        <h6>数据处理状态</h6>
-                        <div class="progress mb-2">
-                            <div class="progress-bar" role="progressbar" style="width: 85%; background-color: var(--primary-color);" 
-                                 aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small class="text-muted">85% 数据已处理</small>
-                        
-                        <h6 class="mt-3">HDFS 存储</h6>
-                        <div class="progress mb-2">
-                            <div class="progress-bar" role="progressbar" style="width: 65%; background-color: var(--primary-color);" 
-                                 aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small class="text-muted">1.2PB/2PB 已使用</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- 城市天气预报 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        重点城市天气预报
-                        <select class="form-select form-select-sm city-selector" style="width: auto; display: inline-block;">
-                            <option>北京市</option>
-                            <option>上海市</option>
-                            <option>广州市</option>
-                            <option>深圳市</option>
-                            <option>成都市</option>
-                        </select>
-                    </div>
-                    <div class="card-body">
-                        <div class="weather-card">
-                            <i class="fas fa-sun weather-icon" style="color: #FFC107; font-size: 48px;"></i>
-                            <div class="weather-temp">23°C</div>
-                            <div class="weather-desc">晴天，空气质量良</div>
-                        </div>
-                        
-                        <div class="row mt-3">
-                            <div class="col text-center">
-                                <div>周一</div>
-                                <i class="fas fa-sun weather-icon" style="color: #FFC107;"></i>
-                                <div>22°C</div>
-                            </div>
-                            <div class="col text-center">
-                                <div>周二</div>
-                                <i class="fas fa-cloud weather-icon" style="color: #9E9E9E;"></i>
-                                <div>20°C</div>
-                            </div>
-                            <div class="col text-center">
-                                <div>周三</div>
-                                <i class="fas fa-cloud-rain weather-icon" style="color: #2196F3;"></i>
-                                <div>18°C</div>
-                            </div>
-                            <div class="col text-center">
-                                <div>周四</div>
-                                <i class="fas fa-cloud weather-icon" style="color: #9E9E9E;"></i>
-                                <div>21°C</div>
-                            </div>
-                            <div class="col text-center">
-                                <div>周五</div>
-                                <i class="fas fa-sun weather-icon" style="color: #FFC107;"></i>
-                                <div>24°C</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 气象数据趋势 -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        气温变化趋势 (近7天)
+                    <div class="card-header bg-white">
+                        <h5>全国气温变化趋势 (近7天)</h5>
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
@@ -393,15 +103,48 @@
                 </div>
             </div>
             
-            <!-- 气象数据统计 -->
+            <!-- 当前天气 -->
             <div class="col-md-4">
                 <div class="card">
-                    <div class="card-header">
-                        气象数据统计
+                    <div class="card-header bg-white">
+                        <h5>主要城市天气</h5>
                     </div>
                     <div class="card-body">
-                        <div class="chart-container">
-                            <div id="weatherStatsChart" style="height: 300px;"></div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <i class="fas fa-sun weather-icon text-warning"></i>
+                                <span>北京</span>
+                            </div>
+                            <div>
+                                <strong>23°C</strong> | 晴
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <i class="fas fa-cloud-rain weather-icon text-primary"></i>
+                                <span>上海</span>
+                            </div>
+                            <div>
+                                <strong>19°C</strong> | 小雨
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <div>
+                                <i class="fas fa-cloud weather-icon text-secondary"></i>
+                                <span>广州</span>
+                            </div>
+                            <div>
+                                <strong>26°C</strong> | 多云
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <i class="fas fa-bolt weather-icon text-danger"></i>
+                                <span>成都</span>
+                            </div>
+                            <div>
+                                <strong>20°C</strong> | 雷阵雨
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -409,55 +152,113 @@
         </div>
 
         <div class="row">
-            <!-- 实时气象数据流 -->
+            <!-- 气象数据分布 -->
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">
-                        实时气象数据流 (Kafka + Flink)
-                        <span class="badge badge-hadoop">Hadoop</span>
-                        <span class="badge badge-zookeeper">ZooKeeper</span>
+                    <div class="card-header bg-white">
+                        <h5>气象数据类型分布</h5>
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
-                            <canvas id="dataStreamChart"></canvas>
-                        </div>
-                        <div class="mt-3">
-                            <small class="text-muted">最后更新时间: <span id="stream-update-time">2023-10-22 15:36:45</span></small>
+                            <canvas id="dataTypeChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- 气象预警信息 -->
+            <!-- 集群状态 -->
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-header">
-                        气象预警信息
-                        <span class="badge bg-danger">2 红色预警</span>
+                    <div class="card-header bg-white">
+                        <h5>Hadoop集群状态</h5>
                     </div>
                     <div class="card-body">
-                        <div class="alert alert-danger">
-                            <strong><i class="fas fa-exclamation-triangle"></i> 台风红色预警</strong>
-                            <p>台风"海燕"将于24小时内登陆东南沿海，预计最大风力16级</p>
-                            <small class="text-muted">发布时间: 2023-10-22 14:30:00</small>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>CPU使用率</span>
+                                <span>65%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-primary" style="width: 65%"></div>
+                            </div>
                         </div>
-                        
-                        <div class="alert alert-warning">
-                            <strong><i class="fas fa-exclamation-circle"></i> 暴雨黄色预警</strong>
-                            <p>华北地区未来6小时将出现50毫米以上强降雨</p>
-                            <small class="text-muted">发布时间: 2023-10-22 13:45:00</small>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>内存使用率</span>
+                                <span>72%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-info" style="width: 72%"></div>
+                            </div>
                         </div>
-                        
-                        <div class="alert alert-danger">
-                            <strong><i class="fas fa-exclamation-triangle"></i> 高温红色预警</strong>
-                            <p>西北地区未来3天将持续40℃以上高温天气</p>
-                            <small class="text-muted">发布时间: 2023-10-22 11:20:00</small>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>存储使用率</span>
+                                <span>58%</span>
+                            </div>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-success" style="width: 58%"></div>
+                            </div>
                         </div>
-                        
-                        <div class="alert alert-info">
-                            <strong><i class="fas fa-info-circle"></i> 气象数据处理作业</strong>
-                            <p>台风数据分析MapReduce作业已完成，耗时23分15秒</p>
-                            <small class="text-muted">发布时间: 2023-10-22 10:45:00</small>
+                        <hr>
+                        <h6>节点状态</h6>
+                        <span class="badge bg-success me-2">master-01 (Active)</span>
+                        <span class="badge bg-secondary me-2">master-02 (Standby)</span>
+                        <span class="badge bg-primary me-2">worker-01</span>
+                        <span class="badge bg-primary me-2">worker-02</span>
+                        <span class="badge bg-warning me-2">worker-03</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据处理流程 -->
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5>气象数据处理流程</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-2">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-satellite-dish fa-2x text-primary"></i>
+                            <p class="mt-2">气象站采集</p>
+                        </div>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-arrow-right fa-lg text-muted"></i>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-database fa-2x text-primary"></i>
+                            <p class="mt-2">HDFS存储</p>
+                        </div>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-arrow-right fa-lg text-muted"></i>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-cogs fa-2x text-primary"></i>
+                            <p class="mt-2">MapReduce处理</p>
+                        </div>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-arrow-right fa-lg text-muted"></i>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-chart-line fa-2x text-primary"></i>
+                            <p class="mt-2">数据分析</p>
+                        </div>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                        <i class="fas fa-arrow-right fa-lg text-muted"></i>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="p-3 bg-light rounded">
+                            <i class="fas fa-desktop fa-2x text-primary"></i>
+                            <p class="mt-2">可视化展示</p>
                         </div>
                     </div>
                 </div>
@@ -466,37 +267,28 @@
     </div>
 
     <script>
-        // 更新时间显示
-        function updateTime() {
-            const now = moment();
-            document.getElementById('current-time').textContent = now.format('YYYY-MM-DD HH:mm:ss');
-            document.getElementById('stream-update-time').textContent = now.format('YYYY-MM-DD HH:mm:ss');
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
-
         // 气温变化趋势图
-        const temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
-        const temperatureChart = new Chart(temperatureCtx, {
+        const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+        new Chart(tempCtx, {
             type: 'line',
             data: {
-                labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                labels: ['10/16', '10/17', '10/18', '10/19', '10/20', '10/21', '10/22'],
                 datasets: [
                     {
                         label: '最高气温 (°C)',
-                        data: [22, 20, 18, 21, 24, 26, 25],
-                        borderColor: 'rgba(230, 81, 81, 1)',
+                        data: [22, 24, 20, 18, 21, 23, 25],
+                        borderColor: '#e65151',
                         backgroundColor: 'rgba(230, 81, 81, 0.1)',
                         borderWidth: 2,
-                        tension: 0.4
+                        tension: 0.3
                     },
                     {
                         label: '最低气温 (°C)',
-                        data: [15, 14, 12, 13, 16, 18, 17],
-                        borderColor: 'rgba(66, 165, 245, 1)',
+                        data: [15, 16, 14, 12, 13, 15, 17],
+                        borderColor: '#42a5f5',
                         backgroundColor: 'rgba(66, 165, 245, 0.1)',
                         borderWidth: 2,
-                        tension: 0.4
+                        tension: 0.3
                     }
                 ]
             },
@@ -510,124 +302,35 @@
                             }
                         }
                     }
-                },
-                scales: {
-                    y: {
-                        title: {
-                            display: true,
-                            text: '温度 (°C)'
-                        }
-                    }
                 }
             }
         });
 
-        // 气象数据统计图 (使用ECharts)
-        const weatherStatsChart = echarts.init(document.getElementById('weatherStatsChart'));
-        weatherStatsChart.setOption({
-            tooltip: {
-                trigger: 'item'
-            },
-            legend: {
-                top: '5%',
-                left: 'center'
-            },
-            series: [
-                {
-                    name: '气象数据分布',
-                    type: 'pie',
-                    radius: ['40%', '70%'],
-                    avoidLabelOverlap: false,
-                    itemStyle: {
-                        borderRadius: 10,
-                        borderColor: '#fff',
-                        borderWidth: 2
-                    },
-                    label: {
-                        show: false,
-                        position: 'center'
-                    },
-                    emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: '18',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    labelLine: {
-                        show: false
-                    },
-                    data: [
-                        { value: 35, name: '温度数据' },
-                        { value: 25, name: '湿度数据' },
-                        { value: 20, name: '气压数据' },
-                        { value: 10, name: '风速数据' },
-                        { value: 10, name: '降水量数据' }
-                    ]
-                }
-            ]
-        });
-
-        // 实时气象数据流图
-        const dataStreamCtx = document.getElementById('dataStreamChart').getContext('2d');
-        const dataStreamChart = new Chart(dataStreamCtx, {
-            type: 'bar',
+        // 数据类型分布图
+        const dataTypeCtx = document.getElementById('dataTypeChart').getContext('2d');
+        new Chart(dataTypeCtx, {
+            type: 'doughnut',
             data: {
-                labels: Array.from({length: 20}, (_, i) => {
-                    const date = new Date();
-                    date.setSeconds(date.getSeconds() - 19 + i);
-                    return date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-                }),
+                labels: ['温度数据', '湿度数据', '气压数据', '风速数据', '降水量数据'],
                 datasets: [{
-                    label: '数据摄入量 (条/秒)',
-                    data: Array.from({length: 20}, () => Math.floor(Math.random() * 5000) + 5000),
-                    backgroundColor: 'rgba(30, 136, 229, 0.7)',
-                    borderColor: 'rgba(30, 136, 229, 1)',
-                    borderWidth: 1
+                    data: [35, 25, 15, 15, 10],
+                    backgroundColor: [
+                        '#1e88e5',
+                        '#0d47a1',
+                        '#42a5f5',
+                        '#90caf9',
+                        '#bbdefb'
+                    ]
                 }]
             },
             options: {
                 responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        title: {
-                            display: true,
-                            text: '数据量 (条/秒)'
-                        }
-                    }
-                },
                 plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `${context.dataset.label}: ${context.parsed.y.toLocaleString()}`;
-                            }
-                        }
+                    legend: {
+                        position: 'right'
                     }
                 }
             }
-        });
-
-        // 模拟实时数据更新
-        setInterval(() => {
-            const now = new Date();
-            const timeLabel = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-            
-            // 移除第一个数据点，添加新的数据点
-            dataStreamChart.data.labels.shift();
-            dataStreamChart.data.labels.push(timeLabel);
-            
-            dataStreamChart.data.datasets[0].data.shift();
-            dataStreamChart.data.datasets[0].data.push(Math.floor(Math.random() * 5000) + 5000);
-            
-            dataStreamChart.update();
-            updateTime();
-        }, 1000);
-
-        // 窗口大小变化时重新调整图表大小
-        window.addEventListener('resize', function() {
-            weatherStatsChart.resize();
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
