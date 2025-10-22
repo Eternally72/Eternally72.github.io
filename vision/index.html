@@ -3,56 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadoop & ZooKeeper 数据可视化分析平台</title>
+    <title>大数据云平台可视化分析系统</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #1890ff;
+            --secondary-color: #13c2c2;
+            --success-color: #52c41a;
+            --warning-color: #faad14;
+            --danger-color: #f5222d;
+        }
+        
         body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            background-color: #f5f7fa;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f0f2f5;
             padding: 20px;
         }
+        
         .dashboard-header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
+        
         .card {
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             margin-bottom: 20px;
             border: none;
+            transition: all 0.3s;
         }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        
         .card-header {
             background-color: #fff;
             border-bottom: 1px solid rgba(0,0,0,0.1);
             font-weight: bold;
             border-radius: 10px 10px 0 0 !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+        
         .chart-container {
             height: 300px;
             width: 100%;
         }
+        
         .stat-card {
             text-align: center;
             padding: 15px;
+            position: relative;
+            overflow: hidden;
         }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--primary-color);
+        }
+        
         .stat-value {
             font-size: 28px;
             font-weight: bold;
-            color: #1e3c72;
+            color: var(--primary-color);
+            margin-bottom: 5px;
         }
+        
         .stat-label {
             color: #6c757d;
             font-size: 14px;
         }
+        
+        .stat-trend {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        
+        .trend-up {
+            color: var(--success-color);
+        }
+        
+        .trend-down {
+            color: var(--danger-color);
+        }
+        
         .cluster-status {
             padding: 10px;
         }
+        
         .node {
             display: inline-block;
             margin: 5px;
@@ -60,122 +113,245 @@
             border-radius: 5px;
             background-color: #e9f5ff;
             font-size: 14px;
+            position: relative;
+            padding-left: 30px;
         }
-        .node.active {
-            background-color: #d4edda;
+        
+        .node::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #ccc;
         }
-        .node.warning {
-            background-color: #fff3cd;
+        
+        .node.active::before {
+            background-color: var(--success-color);
         }
-        .node.danger {
-            background-color: #f8d7da;
+        
+        .node.warning::before {
+            background-color: var(--warning-color);
+        }
+        
+        .node.danger::before {
+            background-color: var(--danger-color);
+        }
+        
+        .alert-item {
+            padding: 10px;
+            border-left: 3px solid var(--warning-color);
+            margin-bottom: 10px;
+            background-color: #fffbe6;
+            border-radius: 4px;
+        }
+        
+        .alert-item.critical {
+            border-left-color: var(--danger-color);
+            background-color: #fff1f0;
+        }
+        
+        .alert-item.info {
+            border-left-color: var(--primary-color);
+            background-color: #e6f7ff;
+        }
+        
+        .alert-time {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .resource-meter {
+            height: 8px;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+        
+        .resource-meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(24, 144, 255, 0.05);
+        }
+        
+        .badge-cloud {
+            background-color: #1890ff;
+            color: white;
+        }
+        
+        .badge-hadoop {
+            background-color: #13c2c2;
+            color: white;
+        }
+        
+        .badge-spark {
+            background-color: #fa8c16;
+            color: white;
+        }
+        
+        .refresh-btn {
+            cursor: pointer;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+        
+        .time-display {
+            font-size: 14px;
+            color: #6c757d;
         }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <div class="dashboard-header">
-            <h1><i class="fas fa-chart-line"></i> Hadoop & ZooKeeper 数据可视化分析平台</h1>
-            <p class="mb-0">实时监控和分析大数据平台运行状态与数据趋势</p>
+            <div>
+                <h1><i class="fas fa-cloud"></i> 大数据云平台可视化分析系统</h1>
+                <p class="mb-0">实时监控与分析大数据云平台运行状态与数据处理情况</p>
+            </div>
+            <div class="time-display" id="current-time"></div>
         </div>
 
         <div class="row">
             <!-- 统计卡片 -->
             <div class="col-md-3">
                 <div class="card stat-card">
-                    <div class="stat-value" id="total-data">15.7TB</div>
-                    <div class="stat-label">总数据量</div>
+                    <div class="stat-value">24.8<span style="font-size: 16px">PB</span></div>
+                    <div class="stat-label">集群总存储量</div>
+                    <div class="stat-trend trend-up"><i class="fas fa-caret-up"></i> 12.5% 周增长</div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card stat-card">
-                    <div class="stat-value" id="daily-process">284M</div>
-                    <div class="stat-label">日处理记录</div>
+                    <div class="stat-value">3.2<span style="font-size: 16px">B</span></div>
+                    <div class="stat-label">日处理记录数</div>
+                    <div class="stat-trend trend-up"><i class="fas fa-caret-up"></i> 8.3% 日增长</div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card stat-card">
-                    <div class="stat-value" id="active-nodes">24</div>
-                    <div class="stat-label">活跃节点</div>
+                    <div class="stat-value">98.76<span style="font-size: 16px">%</span></div>
+                    <div class="stat-label">服务可用性</div>
+                    <div class="stat-trend trend-down"><i class="fas fa-caret-down"></i> 0.24% 周下降</div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card stat-card">
-                    <div class="stat-value" id="job-success">98.7%</div>
-                    <div class="stat-label">作业成功率</div>
+                    <div class="stat-value">1.45<span style="font-size: 16px">ms</span></div>
+                    <div class="stat-label">平均处理延迟</div>
+                    <div class="stat-trend trend-up"><i class="fas fa-caret-up"></i> 0.15ms 日增长</div>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <!-- 数据趋势图 -->
+            <!-- 集群资源使用情况 -->
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
-                        数据量增长趋势 (最近30天)
+                        集群资源使用情况 (实时)
+                        <span class="refresh-btn"><i class="fas fa-sync-alt"></i> 刷新</span>
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
-                            <canvas id="dataGrowthChart"></canvas>
+                            <canvas id="clusterResourceChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- 集群状态 -->
+            <!-- 集群健康状态 -->
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        ZooKeeper 集群状态
+                        集群健康状态
+                        <span class="badge bg-success">正常</span>
                     </div>
-                    <div class="card-body cluster-status">
-                        <div class="node active">zk-node-01 (Leader)</div>
-                        <div class="node active">zk-node-02 (Follower)</div>
-                        <div class="node active">zk-node-03 (Follower)</div>
-                        <div class="node active">zk-node-04 (Observer)</div>
-                        <div class="node warning">zk-node-05 (Syncing)</div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>CPU使用率</span>
+                                <span>68.5%</span>
+                            </div>
+                            <div class="resource-meter">
+                                <div class="resource-meter-fill" style="width: 68.5%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>内存使用率</span>
+                                <span>72.3%</span>
+                            </div>
+                            <div class="resource-meter">
+                                <div class="resource-meter-fill" style="width: 72.3%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>存储使用率</span>
+                                <span>58.1%</span>
+                            </div>
+                            <div class="resource-meter">
+                                <div class="resource-meter-fill" style="width: 58.1%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>网络吞吐量</span>
+                                <span>4.2Gbps</span>
+                            </div>
+                            <div class="resource-meter">
+                                <div class="resource-meter-fill" style="width: 42%"></div>
+                            </div>
+                        </div>
                         
                         <hr>
-                        <h6>集群健康指标</h6>
-                        <div class="progress mb-2">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 95%" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small class="text-muted">95% 健康度</small>
                         
-                        <h6 class="mt-3">平均延迟</h6>
-                        <div class="progress mb-2">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <small class="text-muted">25ms 平均延迟</small>
+                        <h6>节点状态</h6>
+                        <div class="node active">master-01 (Active)</div>
+                        <div class="node active">master-02 (Standby)</div>
+                        <div class="node active">worker-01</div>
+                        <div class="node active">worker-02</div>
+                        <div class="node warning">worker-03 (High Load)</div>
+                        <div class="node danger">worker-04 (Disk 95%)</div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="row">
-            <!-- 作业类型分布 -->
+            <!-- 数据处理流水线 -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        Hadoop 作业类型分布
+                        数据处理流水线状态
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
-                            <canvas id="jobTypeChart"></canvas>
+                            <div id="dataPipelineChart" style="height: 300px;"></div>
                         </div>
                     </div>
                 </div>
             </div>
             
-            <!-- 数据存储分布 -->
+            <!-- 实时数据摄入 -->
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        数据存储分布 (按类型)
+                        实时数据摄入速率 (条/秒)
                     </div>
                     <div class="card-body">
                         <div class="chart-container">
-                            <div id="storageDistributionChart" style="height: 300px;"></div>
+                            <canvas id="dataIngestionChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -183,15 +359,139 @@
         </div>
 
         <div class="row">
-            <!-- 节点资源使用 -->
-            <div class="col-md-12">
+            <!-- 告警信息 -->
+            <div class="col-md-5">
                 <div class="card">
                     <div class="card-header">
-                        节点资源使用情况 (Top 10)
+                        最近告警信息
+                        <span class="badge bg-danger">3 紧急</span>
                     </div>
                     <div class="card-body">
-                        <div class="chart-container">
-                            <div id="nodeResourceChart" style="height: 400px;"></div>
+                        <div class="alert-item critical">
+                            <div class="d-flex justify-content-between">
+                                <strong>Worker-04 磁盘空间不足</strong>
+                                <span class="alert-time">2分钟前</span>
+                            </div>
+                            <p class="mb-0">磁盘使用率已达到95%，请及时清理或扩容</p>
+                        </div>
+                        
+                        <div class="alert-item">
+                            <div class="d-flex justify-content-between">
+                                <strong>Kafka Topic lag 过高</strong>
+                                <span class="alert-time">15分钟前</span>
+                            </div>
+                            <p class="mb-0">Topic "user_behavior" 消费延迟超过10万条</p>
+                        </div>
+                        
+                        <div class="alert-item critical">
+                            <div class="d-flex justify-content-between">
+                                <strong>HDFS 副本不足</strong>
+                                <span class="alert-time">32分钟前</span>
+                            </div>
+                            <p class="mb-0">/data/warehouse 目录下5个文件副本数不足</p>
+                        </div>
+                        
+                        <div class="alert-item info">
+                            <div class="d-flex justify-content-between">
+                                <strong>Spark 作业完成</strong>
+                                <span class="alert-time">1小时前</span>
+                            </div>
+                            <p class="mb-0">作业 "daily_user_analysis" 成功完成</p>
+                        </div>
+                        
+                        <div class="alert-item critical">
+                            <div class="d-flex justify-content-between">
+                                <strong>ZooKeeper 连接超时</strong>
+                                <span class="alert-time">2小时前</span>
+                            </div>
+                            <p class="mb-0">Worker-03 与 ZooKeeper 连接不稳定</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 作业执行情况 -->
+            <div class="col-md-7">
+                <div class="card">
+                    <div class="card-header">
+                        最近作业执行情况
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>作业ID</th>
+                                        <th>类型</th>
+                                        <th>状态</th>
+                                        <th>开始时间</th>
+                                        <th>持续时间</th>
+                                        <th>资源使用</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>job_202310221536</td>
+                                        <td><span class="badge badge-spark">Spark</span></td>
+                                        <td><span class="badge bg-success">成功</span></td>
+                                        <td>2023-10-22 15:36</td>
+                                        <td>12分34秒</td>
+                                        <td>
+                                            <div class="resource-meter">
+                                                <div class="resource-meter-fill" style="width: 45%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>job_202310221420</td>
+                                        <td><span class="badge badge-hadoop">MapReduce</span></td>
+                                        <td><span class="badge bg-success">成功</span></td>
+                                        <td>2023-10-22 14:20</td>
+                                        <td>23分12秒</td>
+                                        <td>
+                                            <div class="resource-meter">
+                                                <div class="resource-meter-fill" style="width: 68%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>job_202310221315</td>
+                                        <td><span class="badge badge-cloud">Flink</span></td>
+                                        <td><span class="badge bg-warning">运行中</span></td>
+                                        <td>2023-10-22 13:15</td>
+                                        <td>2小时21分</td>
+                                        <td>
+                                            <div class="resource-meter">
+                                                <div class="resource-meter-fill" style="width: 72%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>job_202310221110</td>
+                                        <td><span class="badge badge-spark">Spark</span></td>
+                                        <td><span class="badge bg-danger">失败</span></td>
+                                        <td>2023-10-22 11:10</td>
+                                        <td>8分45秒</td>
+                                        <td>
+                                            <div class="resource-meter">
+                                                <div class="resource-meter-fill" style="width: 52%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>job_202310220945</td>
+                                        <td><span class="badge badge-hadoop">Hive</span></td>
+                                        <td><span class="badge bg-success">成功</span></td>
+                                        <td>2023-10-22 09:45</td>
+                                        <td>15分23秒</td>
+                                        <td>
+                                            <div class="resource-meter">
+                                                <div class="resource-meter-fill" style="width: 38%"></div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -200,19 +500,78 @@
     </div>
 
     <script>
-        // 数据增长趋势图
-        const dataGrowthCtx = document.getElementById('dataGrowthChart').getContext('2d');
-        const dataGrowthChart = new Chart(dataGrowthCtx, {
+        // 更新时间显示
+        function updateTime() {
+            document.getElementById('current-time').textContent = 
+                moment().format('YYYY-MM-DD HH:mm:ss');
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // 集群资源使用情况图
+        const clusterResourceCtx = document.getElementById('clusterResourceChart').getContext('2d');
+        const clusterResourceChart = new Chart(clusterResourceCtx, {
+            type: 'bar',
+            data: {
+                labels: ['CPU', '内存', '存储', '网络'],
+                datasets: [
+                    {
+                        label: '使用率 (%)',
+                        data: [68.5, 72.3, 58.1, 42],
+                        backgroundColor: 'rgba(24, 144, 255, 0.7)',
+                        borderColor: 'rgba(24, 144, 255, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '阈值 (%)',
+                        data: [85, 85, 90, 80],
+                        backgroundColor: 'rgba(250, 173, 20, 0.3)',
+                        borderColor: 'rgba(250, 173, 20, 1)',
+                        borderWidth: 1,
+                        type: 'line',
+                        fill: false
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '使用率 (%)'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 实时数据摄入图
+        const dataIngestionCtx = document.getElementById('dataIngestionChart').getContext('2d');
+        const dataIngestionChart = new Chart(dataIngestionCtx, {
             type: 'line',
             data: {
-                labels: Array.from({length: 30}, (_, i) => `${i+1}日`),
+                labels: Array.from({length: 30}, (_, i) => {
+                    const date = new Date();
+                    date.setMinutes(date.getMinutes() - 29 + i);
+                    return date.getHours() + ':' + String(date.getMinutes()).padStart(2, '0');
+                }),
                 datasets: [{
-                    label: '数据量 (TB)',
-                    data: [12.1, 12.3, 12.5, 12.7, 12.9, 13.1, 13.3, 13.5, 13.7, 13.9, 
-                           14.1, 14.3, 14.5, 14.6, 14.8, 14.9, 15.0, 15.1, 15.2, 15.3, 
-                           15.4, 15.4, 15.5, 15.5, 15.6, 15.6, 15.7, 15.7, 15.7, 15.7],
-                    borderColor: '#1e3c72',
-                    backgroundColor: 'rgba(30, 60, 114, 0.1)',
+                    label: '数据摄入速率',
+                    data: Array.from({length: 30}, () => Math.floor(Math.random() * 50000) + 50000),
+                    borderColor: 'rgba(19, 194, 194, 1)',
+                    backgroundColor: 'rgba(19, 194, 194, 0.1)',
                     borderWidth: 2,
                     fill: true,
                     tension: 0.4
@@ -220,62 +579,20 @@
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}TB`;
-                            }
-                        }
-                    }
-                },
                 scales: {
                     y: {
                         beginAtZero: false,
                         title: {
                             display: true,
-                            text: '数据量 (TB)'
+                            text: '条/秒'
                         }
                     }
-                }
-            }
-        });
-
-        // 作业类型分布图
-        const jobTypeCtx = document.getElementById('jobTypeChart').getContext('2d');
-        const jobTypeChart = new Chart(jobTypeCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['MapReduce', 'Spark', 'Hive', 'Pig', 'HBase', '其他'],
-                datasets: [{
-                    data: [35, 25, 20, 10, 5, 5],
-                    backgroundColor: [
-                        '#1e3c72',
-                        '#2a5298',
-                        '#4a6fbb',
-                        '#7b9fd7',
-                        '#a8c1e8',
-                        '#d6e3f5'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
+                },
                 plugins: {
-                    legend: {
-                        position: 'right',
-                    },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const value = context.raw;
-                                const percentage = Math.round((value / total) * 100);
-                                return `${context.label}: ${value} (${percentage}%)`;
+                                return `${context.dataset.label}: ${context.parsed.y.toLocaleString()} 条/秒`;
                             }
                         }
                     }
@@ -283,105 +600,59 @@
             }
         });
 
-        // 数据存储分布图 (使用ECharts)
-        const storageDistributionChart = echarts.init(document.getElementById('storageDistributionChart'));
-        storageDistributionChart.setOption({
+        // 数据处理流水线图 (使用ECharts)
+        const dataPipelineChart = echarts.init(document.getElementById('dataPipelineChart'));
+        dataPipelineChart.setOption({
             tooltip: {
                 trigger: 'item',
-                formatter: '{a} <br/>{b}: {c} ({d}%)'
+                triggerOn: 'mousemove'
             },
             legend: {
-                orient: 'vertical',
-                right: 10,
-                top: 'center',
-                data: ['结构化数据', '半结构化数据', '非结构化数据', '日志数据', '其他']
+                top: '5%',
+                left: 'center'
             },
             series: [
                 {
-                    name: '存储分布',
-                    type: 'pie',
-                    radius: ['50%', '70%'],
-                    avoidLabelOverlap: false,
-                    itemStyle: {
-                        borderRadius: 10,
-                        borderColor: '#fff',
-                        borderWidth: 2
-                    },
-                    label: {
-                        show: false,
-                        position: 'center'
-                    },
+                    type: 'sankey',
+                    top: '15%',
+                    left: '5%',
+                    right: '5%',
+                    bottom: '15%',
                     emphasis: {
-                        label: {
-                            show: true,
-                            fontSize: '18',
-                            fontWeight: 'bold'
-                        }
-                    },
-                    labelLine: {
-                        show: false
+                        focus: 'adjacency'
                     },
                     data: [
-                        { value: 45, name: '结构化数据' },
-                        { value: 20, name: '半结构化数据' },
-                        { value: 25, name: '非结构化数据' },
-                        { value: 8, name: '日志数据' },
-                        { value: 2, name: '其他' }
-                    ]
-                }
-            ]
-        });
-
-        // 节点资源使用图 (使用ECharts)
-        const nodeResourceChart = echarts.init(document.getElementById('nodeResourceChart'));
-        nodeResourceChart.setOption({
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'shadow'
-                }
-            },
-            legend: {
-                data: ['CPU使用率', '内存使用率', '磁盘使用率']
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            xAxis: {
-                type: 'value',
-                boundaryGap: [0, 0.01]
-            },
-            yAxis: {
-                type: 'category',
-                data: ['node-01', 'node-02', 'node-03', 'node-04', 'node-05', 
-                       'node-06', 'node-07', 'node-08', 'node-09', 'node-10']
-            },
-            series: [
-                {
-                    name: 'CPU使用率',
-                    type: 'bar',
-                    data: [78, 65, 82, 74, 68, 72, 79, 81, 75, 70],
+                        { name: 'Kafka' },
+                        { name: 'Flink 实时处理' },
+                        { name: 'Spark 批处理' },
+                        { name: 'HDFS 存储' },
+                        { name: 'HBase' },
+                        { name: 'Hive 数据仓库' },
+                        { name: 'Elasticsearch' },
+                        { name: '可视化报表' }
+                    ],
+                    links: [
+                        { source: 'Kafka', target: 'Flink 实时处理', value: 15 },
+                        { source: 'Kafka', target: 'Spark 批处理', value: 10 },
+                        { source: 'Flink 实时处理', target: 'HBase', value: 8 },
+                        { source: 'Flink 实时处理', target: 'Elasticsearch', value: 7 },
+                        { source: 'Spark 批处理', target: 'HDFS 存储', value: 6 },
+                        { source: 'Spark 批处理', target: 'Hive 数据仓库', value: 4 },
+                        { source: 'HDFS 存储', target: 'Hive 数据仓库', value: 2 },
+                        { source: 'Hive 数据仓库', target: '可视化报表', value: 6 },
+                        { source: 'HBase', target: '可视化报表', value: 4 },
+                        { source: 'Elasticsearch', target: '可视化报表', value: 3 }
+                    ],
+                    lineStyle: {
+                        color: 'gradient',
+                        curveness: 0.5
+                    },
+                    label: {
+                        color: '#333',
+                        fontSize: 12
+                    },
                     itemStyle: {
-                        color: '#1e3c72'
-                    }
-                },
-                {
-                    name: '内存使用率',
-                    type: 'bar',
-                    data: [65, 58, 72, 68, 62, 65, 70, 75, 68, 60],
-                    itemStyle: {
-                        color: '#4a6fbb'
-                    }
-                },
-                {
-                    name: '磁盘使用率',
-                    type: 'bar',
-                    data: [45, 52, 48, 55, 50, 42, 58, 60, 52, 48],
-                    itemStyle: {
-                        color: '#7b9fd7'
+                        color: '#1890ff'
                     }
                 }
             ]
@@ -389,8 +660,7 @@
 
         // 窗口大小变化时重新调整图表大小
         window.addEventListener('resize', function() {
-            storageDistributionChart.resize();
-            nodeResourceChart.resize();
+            dataPipelineChart.resize();
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
