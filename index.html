@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="一个简洁、清新的个人主页占位模板。" />
+  <title>个人主页 | Your Name</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav" aria-label="主导航">
+      <a class="brand" href="#home">Your Name</a>
+
+      <button class="nav-toggle" type="button" aria-label="打开导航" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <div class="nav-links" data-nav-links>
+        <a href="#about">关于</a>
+        <a href="#focus">方向</a>
+        <a href="#projects">项目</a>
+        <a href="#contact">联系</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="home">
+    <!-- 首屏区域：集中放置姓名、自我介绍和可替换的视觉占位图。 -->
+    <section class="hero section">
+      <div class="hero-copy">
+        <p class="eyebrow">Personal Homepage</p>
+        <h1>你好，我是 Your Name。</h1>
+        <p class="hero-text">
+          这里是一段简短的自我介绍占位文本。你可以写下自己的身份、兴趣方向，
+          或者一句能够代表你当前状态的话。
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#projects">查看项目</a>
+          <a class="button secondary" href="#contact">联系我</a>
+        </div>
+      </div>
+
+      <aside class="profile-card" aria-label="个人信息卡片">
+        <img
+          src="https://images.unsplash.com/photo-1498050108023-c5249f4df0852?auto=format&fit=crop&w=900&q=80"
+          alt="个人主页视觉占位图"
+        />
+        <div class="profile-info">
+          <p class="profile-name">Your Name</p>
+          <p class="profile-role">Your Role / Your City</p>
+        </div>
+      </aside>
+    </section>
+
+    <!-- 内容保持轻量，便于后续直接替换成真实信息。 -->
+    <section id="about" class="section about-section">
+      <div class="section-heading">
+        <p class="eyebrow">About</p>
+        <h2>简短自我介绍</h2>
+      </div>
+      <p class="about-text">
+        这里放一段更完整但仍然简洁的介绍文字。你可以描述自己的学习经历、工作背景、
+        创作习惯、长期关注的问题，或者最近正在探索的方向。
+      </p>
+    </section>
+
+    <!-- 卡片区域使用统一结构，后续增删方向时只需要复制 article。 -->
+    <section id="focus" class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Focus</p>
+        <h2>关注方向</h2>
+      </div>
+
+      <div class="card-grid focus-grid">
+        <article class="card">
+          <span class="card-mark">01</span>
+          <h3>方向一</h3>
+          <p>这里是关注方向的占位描述，用一两句话说明你感兴趣的主题。</p>
+        </article>
+        <article class="card">
+          <span class="card-mark">02</span>
+          <h3>方向二</h3>
+          <p>这里是关注方向的占位描述，可以替换成技术、设计、研究或创作方向。</p>
+        </article>
+        <article class="card">
+          <span class="card-mark">03</span>
+          <h3>方向三</h3>
+          <p>这里是关注方向的占位描述，保持简短会让页面更轻盈。</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="projects" class="section">
+      <div class="section-heading">
+        <p class="eyebrow">Projects</p>
+        <h2>项目占位</h2>
+      </div>
+
+      <div class="card-grid project-grid">
+        <article class="card project-card">
+          <div>
+            <span class="card-mark">Project A</span>
+            <h3>项目名称占位</h3>
+            <p>这里放项目的一句话简介，例如项目目标、你的职责或主要成果。</p>
+          </div>
+          <a href="#" aria-label="查看项目 A">查看详情</a>
+        </article>
+        <article class="card project-card">
+          <div>
+            <span class="card-mark">Project B</span>
+            <h3>项目名称占位</h3>
+            <p>这里放项目的一句话简介，后续可以替换为 GitHub 或在线演示链接。</p>
+          </div>
+          <a href="#" aria-label="查看项目 B">查看详情</a>
+        </article>
+      </div>
+    </section>
+
+    <section id="contact" class="section contact-section">
+      <div>
+        <p class="eyebrow">Contact</p>
+        <h2>保持联系</h2>
+        <p>如果你想交流想法、合作项目，或者只是打个招呼，可以通过下面的方式联系我。</p>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:your.email@example.com">Email</a>
+        <a href="#">GitHub</a>
+        <a href="#">LinkedIn</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© <span data-year></span> Your Name. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
