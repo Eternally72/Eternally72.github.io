@@ -12,12 +12,23 @@ document.querySelectorAll("[data-year]").forEach((item) => {
   item.textContent = new Date().getFullYear();
 });
 
+let headerFrame = 0;
+let headerIsScrolled = null;
+
 const updateHeader = () => {
-  header?.classList.toggle("is-scrolled", window.scrollY > 16);
+  const nextState = window.scrollY > 16;
+  if (nextState !== headerIsScrolled) {
+    header?.classList.toggle("is-scrolled", nextState);
+    headerIsScrolled = nextState;
+  }
+  headerFrame = 0;
 };
 
 updateHeader();
-window.addEventListener("scroll", updateHeader, { passive: true });
+window.addEventListener("scroll", () => {
+  if (headerFrame) return;
+  headerFrame = window.requestAnimationFrame(updateHeader);
+}, { passive: true });
 
 if (navToggle && navMenu) {
   const closeMenu = () => {
@@ -59,19 +70,6 @@ if ("IntersectionObserver" in window && sections.length > 0) {
 document.querySelectorAll("[data-placeholder-link]").forEach((link) => {
   link.addEventListener("click", (event) => event.preventDefault());
 });
-
-if (!reducedMotion && window.matchMedia("(pointer: fine)").matches) {
-  let frameId = 0;
-
-  window.addEventListener("pointermove", (event) => {
-    if (frameId) return;
-    frameId = window.requestAnimationFrame(() => {
-      document.documentElement.style.setProperty("--pointer-x", `${event.clientX}px`);
-      document.documentElement.style.setProperty("--pointer-y", `${event.clientY}px`);
-      frameId = 0;
-    });
-  }, { passive: true });
-}
 
 if (!reducedMotion) {
   // 仅保留一圈轻量扩散，避免粒子堆叠造成视觉噪声。

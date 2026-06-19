@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="AIWerewolf 项目简介。" />
+  <meta name="description" content="AIWerewolf：基于 Java 21、Spring Boot 和 Vue 3 的多 Agent 狼人杀项目。" />
   <meta name="theme-color" content="#f3f8ff" />
   <title>AIWerewolf | 白俊</title>
   <link rel="stylesheet" href="../../style.css" />
@@ -32,45 +32,43 @@
       <div class="container detail-hero-content">
         <p class="section-label">Project 01 / Multi-Agent System</p>
         <h1>AIWerewolf</h1>
-        <p class="detail-lead">围绕狼人杀场景构建的多智能体协作、推理与交互实验，用可观察的游戏流程探索 Agent 行为。</p>
+        <p class="detail-lead">基于 Java 21、Spring Boot 和 Vue 3 构建的多 Agent 狼人杀系统，支持真人参与、真人观战、真人与 AI 混合对局，以及全 AI 自动对局。</p>
         <ul class="tag-list" aria-label="技术栈">
-          <li>Python</li><li>FastAPI</li><li>Multi-Agent</li><li>WebSocket</li>
+          <li>Java 21</li><li>Spring Boot 3</li><li>Vue 3</li><li>TypeScript</li><li>MySQL</li><li>Redis</li><li>WebSocket/STOMP</li><li>Maven</li>
         </ul>
       </div>
     </section>
 
-    <!-- 详情只保留公开概述，后续可按实际进度逐步扩充。 -->
+    <!-- 内容依据实际仓库结构整理，不展示密钥、Token 或私有部署信息。 -->
     <section class="detail-main">
       <div class="container detail-layout">
         <div class="detail-content">
           <article class="detail-panel">
             <h2>Project Overview</h2>
-            <p>项目将角色决策、回合推进和实时交互拆分为清晰模块，重点关注多智能体在有限信息环境下的协作与推理表现。</p>
+            <p>项目以后端状态机驱动完整对局流程，为每个 AI 玩家维护独立角色、视角、记忆和策略，并通过浏览器端游戏桌呈现发言、投票、夜间行动与观战过程。</p>
           </article>
           <article class="detail-panel">
             <h2>Core Features</h2>
             <ul class="detail-list">
-              <li>多角色 Agent 的独立上下文与行动流程。</li>
-              <li>可观察的游戏状态、消息和回合管理。</li>
-              <li>面向浏览器交互的实时通信接口。</li>
+              <li>支持真人参与、真人观战、真人与 AI 混合对局及全 AI 自动模拟。</li>
+              <li>通过 GameViewBuilder 隔离角色信息，避免普通玩家或 Agent 获取完整真相。</li>
+              <li>使用 REST 恢复状态，并通过 WebSocket/STOMP 推送阶段、时间线和公共事件。</li>
+              <li>多模型网关支持 Mock 与多种兼容 Provider，默认无需真实 API Key 即可运行。</li>
             </ul>
           </article>
           <article class="detail-panel">
             <h2>Highlights</h2>
             <ul class="detail-list">
-              <li>用具体场景验证多 Agent 编排思路。</li>
-              <li>服务端结构便于替换模型与策略。</li>
-              <li>保持演示体验与工程可维护性的平衡。</li>
+              <li>GamePhaseEngine 与行动服务拆分回合推进、昼夜行动、投票和死亡结算。</li>
+              <li>MySQL 保存长期事实与审计记录，Redis 负责运行态、锁、幂等键和短期记忆。</li>
+              <li>GodView 可查看身份、AgentRun、AgentTask 与公开或完整视角的事件回放。</li>
+              <li>真实模型密钥仅通过后端环境变量读取，前端不会直接接触敏感配置。</li>
             </ul>
           </article>
         </div>
-        <aside class="detail-sidebar">
-          <div class="detail-panel">
-            <h2>Future Plans</h2>
-            <p>继续完善行为评测、对局回放与策略对比，让实验结果更容易观察和复现。</p>
-            <a class="button button-primary" href="../../index.html#projects">Back to Home</a>
-          </div>
-        </aside>
+        <div class="detail-actions">
+          <a class="button button-primary" href="../../index.html#projects">Back to Home</a>
+        </div>
       </div>
     </section>
   </main>
