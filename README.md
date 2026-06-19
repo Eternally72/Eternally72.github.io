@@ -28,7 +28,7 @@
 
 - 个人信息：编辑根目录的 `index.html`，搜索“白俊”、身份描述或邮箱。
 - 项目内容：编辑 `index.html` 中的项目卡片，以及 `projects/` 下对应项目的 `index.html`。
-- GitHub 链接：替换首页 GitHub 卡片的 `href="#"`，并删除 `data-placeholder-link` 属性。
+- GitHub 链接：首页当前指向 `https://github.com/eternally72`，可直接修改对应联系方式卡片的 `href`。
 - 简历链接：将简历文件放入 `assets/`，例如 `assets/resume.pdf`，再替换 Resume 卡片的 `href` 并删除 `data-placeholder-link`。
 - 主题颜色：编辑 `style.css` 顶部 `:root` 中的颜色变量。
 - Hero 图片：使用新的图片替换 `assets/hero-abstract.webp`，建议保持宽幅比例。
