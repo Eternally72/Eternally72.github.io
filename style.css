@@ -622,6 +622,7 @@ h3 {
    8. 项目详情页
    ========================= */
 .detail-page {
+  overflow-x: clip;
   background: linear-gradient(145deg, #f7fbfa 0%, #f1f7fb 55%, #f8f5fb 100%);
 }
 
@@ -718,18 +719,23 @@ h3 {
   margin-top: 22px;
 }
 
-/* LiveGuard 的图片先使用占位区，替换为 img 时保持相同容器即可。 */
+/* LiveGuard 截图的每一层都限制在内容容器内，防止原图尺寸撑开网格。 */
 .detail-boundary {
   border-color: rgba(83, 151, 128, 0.28);
   background: rgba(239, 250, 246, 0.88);
 }
 
 .detail-media {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
   margin: 0;
 }
 
 .detail-media img {
   width: 100%;
+  max-width: 100%;
   height: auto;
   display: block;
   border: 1px solid var(--line);
@@ -744,6 +750,9 @@ h3 {
 }
 
 .detail-gallery {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
   padding-top: 12px;
 }
 
@@ -770,11 +779,17 @@ h3 {
 }
 
 .detail-screenshot-list {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
   display: grid;
   gap: 38px;
 }
 
 .detail-screenshot {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
   content-visibility: auto;
   contain-intrinsic-size: auto 720px;
 }
@@ -810,6 +825,8 @@ h3 {
 }
 
 .detail-image-link {
+  width: 100%;
+  max-width: 100%;
   display: block;
   overflow: hidden;
   border-radius: var(--radius);
