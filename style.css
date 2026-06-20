@@ -675,6 +675,10 @@ h3 {
   grid-column: 1 / -1;
 }
 
+.detail-wide {
+  grid-column: 1 / -1;
+}
+
 .detail-panel {
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -712,6 +716,112 @@ h3 {
   display: flex;
   justify-content: flex-start;
   margin-top: 22px;
+}
+
+/* LiveGuard 的图片先使用占位区，替换为 img 时保持相同容器即可。 */
+.detail-boundary {
+  border-color: rgba(83, 151, 128, 0.28);
+  background: rgba(239, 250, 246, 0.88);
+}
+
+.detail-media {
+  margin: 0;
+}
+
+.detail-media img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  object-fit: contain;
+}
+
+.detail-media figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.detail-gallery {
+  padding-top: 12px;
+}
+
+.detail-gallery-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+.detail-gallery-head h2,
+.detail-gallery-head p {
+  margin-bottom: 0;
+}
+
+.detail-gallery-head h2 {
+  font-size: 1.5rem;
+}
+
+.detail-gallery-head p {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.detail-screenshot-list {
+  display: grid;
+  gap: 38px;
+}
+
+.detail-screenshot {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
+.detail-screenshot + .detail-screenshot {
+  padding-top: 38px;
+  border-top: 1px solid var(--line);
+}
+
+.detail-screenshot-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.detail-screenshot-head > span {
+  flex: 0 0 auto;
+  color: #5d7a88;
+  font-size: 0.72rem;
+  font-weight: 780;
+}
+
+.detail-screenshot-head h3 {
+  margin-bottom: 5px;
+  font-size: 1.12rem;
+}
+
+.detail-screenshot-head p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.detail-image-link {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: #091223;
+  box-shadow: var(--shadow);
+}
+
+.detail-screenshot-portrait {
+  width: 100%;
+  max-width: 720px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 /* =========================
@@ -799,6 +909,8 @@ h3 {
   .project-grid { grid-template-columns: 1fr; }
   .detail-content { grid-template-columns: 1fr; }
   .detail-content .detail-panel:first-child { grid-column: auto; }
+  .detail-wide { grid-column: auto; }
+  .detail-gallery-head { align-items: flex-start; flex-direction: column; gap: 8px; }
   .detail-hero h1 { font-size: 3rem; }
 }
 
@@ -818,6 +930,8 @@ h3 {
   .detail-hero-content { min-height: 450px; padding-bottom: 54px; }
   .detail-hero h1 { font-size: 2.5rem; }
   .detail-panel { padding: 23px; }
+  .detail-screenshot-list { gap: 30px; }
+  .detail-screenshot + .detail-screenshot { padding-top: 30px; }
 }
 
 /* 尊重系统减少动态效果设置，保留所有布局与功能。 */

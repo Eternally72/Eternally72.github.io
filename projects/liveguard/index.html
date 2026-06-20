@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="LiveGuard 项目简介。" />
+  <meta name="description" content="LiveGuard：面向实时音视频业务的 AI 体验巡检助手。" />
   <meta name="theme-color" content="#f3f8ff" />
   <title>LiveGuard | 白俊</title>
   <link rel="stylesheet" href="../../style.css" />
@@ -30,39 +30,119 @@
   <main>
     <section class="detail-hero">
       <div class="container detail-hero-content">
-        <p class="section-label">Project 02 / Real-time Service</p>
+        <p class="section-label">Project 02 / AI Operations</p>
         <h1>LiveGuard</h1>
-        <p class="detail-lead">面向实时内容场景的智能监测与风险提示原型，尝试将事件处理、规则判断和实时反馈组合成清晰流程。</p>
+        <p class="detail-lead">面向实时音视频业务的 AI 体验巡检助手，将 CDN、直播云、RTC 和边缘节点等底层指标，转化为可理解、可验证和可执行的根因判断、处理建议与复盘报告。</p>
         <ul class="tag-list" aria-label="技术栈">
-          <li>Java</li><li>Spring Boot</li><li>Redis</li><li>WebSocket</li>
+          <li>React</li><li>TypeScript</li><li>FastAPI</li><li>Pydantic</li><li>LangChain</li><li>LangGraph</li><li>Ant Design</li><li>ECharts</li>
         </ul>
       </div>
     </section>
 
-    <!-- 页面不展示内部数据、密钥或未公开的实现细节。 -->
+    <!-- 内容依据 LiveGuard.md 整理；项目截图统一从当前项目的 assets 目录加载。 -->
     <section class="detail-main">
       <div class="container detail-layout">
-        <div class="detail-content">
+        <div class="detail-content liveguard-detail">
           <article class="detail-panel">
             <h2>Project Overview</h2>
-            <p>LiveGuard 是一个轻量的实时监测系统原型，重点练习事件接入、状态缓存、风险判断与前端通知之间的协作。</p>
+            <p>直播发生卡顿、延迟或黑屏时，告警通常只能说明“出现异常”，却无法直接回答问题来自主播网络、CDN 缓存、区域边缘节点还是源站服务。LiveGuard 在基础监控之上增加体验解释与故障响应能力，帮助直播运营、客户成功和技术支持完成异常发现、根因定位、处置沟通与事件复盘。</p>
           </article>
+
+          <article class="detail-panel detail-wide detail-boundary">
+            <h2>Current Capability Boundary</h2>
+            <p>当前业务监控指标和故障场景均由 Mock 数据生成；AI 诊断可以真实调用百炼 LLM。系统会在调用模型前移除注入故障类型和预设答案，要求 LLM 仅根据数值快照、趋势与地域分布独立归因。</p>
+          </article>
+
           <article class="detail-panel">
-            <h2>Core Features</h2>
+            <h2>Core Workflow</h2>
             <ul class="detail-list">
-              <li>实时事件接入与状态更新。</li>
-              <li>可配置的基础风险判断流程。</li>
-              <li>通过长连接向页面推送提示。</li>
+              <li>聚合延迟、卡顿率、丢包率、首帧时间、CDN 命中率、回源请求及 4xx/5xx 等观测指标。</li>
+              <li>规则引擎识别异常事实，并生成只包含白名单观测数据的盲诊断输入。</li>
+              <li>LLM 输出故障类别、关键证据、最可能根因、其他可能性和验证步骤。</li>
+              <li>服务端计算证据匹配度；结论缺乏数据支撑时拒绝结果并切换到规则诊断。</li>
+              <li>输出处理建议、客户沟通话术和结构化事件复盘报告。</li>
             </ul>
           </article>
+
           <article class="detail-panel">
-            <h2>Highlights</h2>
+            <h2>Reliability & Safety</h2>
             <ul class="detail-list">
-              <li>清晰区分数据接入、判断与通知职责。</li>
-              <li>使用缓存支持短周期状态管理。</li>
-              <li>保持原型简洁，方便后续替换具体能力。</li>
+              <li>诊断输入采用字段白名单，故障标签与预设答案不会进入模型上下文。</li>
+              <li>使用 LangGraph 编排数据清洗、模型调用、结构化解析与结果构造。</li>
+              <li>对模型输出执行结构校验和服务端证据评分，不采用模型自报置信度。</li>
+              <li>模型未配置、超时、格式异常或证据不足时自动使用规则诊断。</li>
+              <li>页面明确展示诊断来源，避免把降级结果伪装成模型结论。</li>
             </ul>
           </article>
+
+          <article class="detail-panel detail-wide">
+            <h2>Covered Scenarios</h2>
+            <p>当前覆盖电商直播、在线课堂、企业会议、视频客服和赛事直播五类业务场景，并可稳定复现主播弱网、区域链路异常、CDN 命中率下降、源站 5xx、热点资源未预热和推流中断六类典型异常。</p>
+          </article>
+
+          <section class="detail-gallery detail-wide" aria-labelledby="liveguard-gallery-title">
+            <div class="detail-gallery-head">
+              <h2 id="liveguard-gallery-title">Product Walkthrough</h2>
+              <p>从业务问题、异常注入、AI 归因到复盘报告的完整演示链路。</p>
+            </div>
+            <div class="detail-screenshot-list">
+              <figure class="detail-media detail-screenshot">
+                <div class="detail-screenshot-head">
+                  <span>01</span>
+                  <div>
+                    <h3>功能定位与产品价值</h3>
+                    <p>展示直播运营从收到投诉、人工拼接信息，到由 LiveGuard 串起证据链的工作方式。</p>
+                  </div>
+                </div>
+                <a class="detail-image-link" href="assets/功能简介.png" target="_blank" rel="noreferrer" aria-label="查看功能简介原图">
+                  <img src="assets/liveguard-overview.webp" alt="LiveGuard 功能简介与产品价值页面" loading="eager" decoding="sync" />
+                </a>
+                <figcaption>把延迟、卡顿率、首帧时间和 CDN 命中率等指标转化为运营判断。</figcaption>
+              </figure>
+
+              <figure class="detail-media detail-screenshot">
+                <div class="detail-screenshot-head">
+                  <span>02</span>
+                  <div>
+                    <h3>异常注入与告警触发</h3>
+                    <p>通过 Mock 场景稳定注入典型故障，生成告警并进入 AI 诊断流程。</p>
+                  </div>
+                </div>
+                <a class="detail-image-link" href="assets/异常注入.png" target="_blank" rel="noreferrer" aria-label="查看异常注入原图">
+                  <img src="assets/liveguard-injection.webp" alt="LiveGuard 告警列表与故障注入面板" loading="lazy" decoding="async" />
+                </a>
+                <figcaption>示例展示 CDN 命中率下降告警，以及主播弱网、边缘节点异常、源站 5xx 等可复现场景。</figcaption>
+              </figure>
+
+              <figure class="detail-media detail-screenshot detail-screenshot-portrait">
+                <div class="detail-screenshot-head">
+                  <span>03</span>
+                  <div>
+                    <h3>AI 盲诊断与证据校验</h3>
+                    <p>模型仅依据清洗后的指标完成归因，服务端再计算证据匹配度。</p>
+                  </div>
+                </div>
+                <a class="detail-image-link" href="assets/AI诊断.png" target="_blank" rel="noreferrer" aria-label="查看 AI 诊断原图">
+                  <img src="assets/liveguard-diagnosis.webp" alt="LiveGuard AI Copilot 诊断结果页面" loading="lazy" decoding="async" />
+                </a>
+                <figcaption>诊断页展示故障类别、关键证据、异常概述、诊断来源和服务端证据匹配度。</figcaption>
+              </figure>
+
+              <figure class="detail-media detail-screenshot">
+                <div class="detail-screenshot-head">
+                  <span>04</span>
+                  <div>
+                    <h3>结构化事件复盘</h3>
+                    <p>将诊断证据、影响范围、处理动作和预防措施沉淀为可复制的复盘报告。</p>
+                  </div>
+                </div>
+                <a class="detail-image-link" href="assets/复盘报告.png" target="_blank" rel="noreferrer" aria-label="查看复盘报告原图">
+                  <img src="assets/liveguard-report.webp" alt="LiveGuard CDN 缓存命中率下降事件复盘报告" loading="lazy" decoding="async" />
+                </a>
+                <figcaption>报告支持页面阅读和 Markdown 复制，便于事件归档与跨团队沟通。</figcaption>
+              </figure>
+            </div>
+          </section>
         </div>
         <div class="detail-actions">
           <a class="button button-primary" href="../../index.html#projects">Back to Home</a>
