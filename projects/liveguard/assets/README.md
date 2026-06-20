@@ -14,4 +14,4 @@
 - `liveguard-diagnosis.webp`
 - `liveguard-report.webp`
 
-详情页点击截图时会打开对应的中文命名 PNG 原图。
+三张宽图的网页展示版本均等比例缩放到 1672px 宽，与全站 Hero 参考图一致；AI 诊断图保持原始 1032px 宽度，不做放大。详情页点击截图时会打开对应的中文命名 PNG 原图。
