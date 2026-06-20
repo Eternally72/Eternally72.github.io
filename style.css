@@ -759,11 +759,16 @@ h3 {
 }
 
 /* 宽屏最多按参考图的 1672px 展示，小屏始终收缩到视口以内。 */
-.liveguard-detail .detail-gallery {
+.liveguard-detail .detail-gallery,
+.liveguard-detail .detail-overview-visual {
   width: min(1672px, calc(100vw - 48px));
   max-width: none;
   margin-left: 50%;
   transform: translateX(-50%);
+}
+
+.detail-overview-visual {
+  padding: 18px 0 22px;
 }
 
 .detail-gallery-head {
@@ -937,7 +942,8 @@ h3 {
   .detail-content { grid-template-columns: 1fr; }
   .detail-content .detail-panel:first-child { grid-column: auto; }
   .detail-wide { grid-column: auto; }
-  .liveguard-detail .detail-gallery { width: calc(100vw - 36px); }
+  .liveguard-detail .detail-gallery,
+  .liveguard-detail .detail-overview-visual { width: calc(100vw - 36px); }
   .detail-gallery-head { align-items: flex-start; flex-direction: column; gap: 8px; }
   .detail-hero h1 { font-size: 3rem; }
 }

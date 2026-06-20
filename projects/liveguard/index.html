@@ -48,6 +48,17 @@
             <p>直播发生卡顿、延迟或黑屏时，告警通常只能说明“出现异常”，却无法直接回答问题来自主播网络、CDN 缓存、区域边缘节点还是源站服务。LiveGuard 在基础监控之上增加体验解释与故障响应能力，帮助直播运营、客户成功和技术支持完成异常发现、根因定位、处置沟通与事件复盘。</p>
           </article>
 
+          <figure class="detail-media detail-wide detail-overview-visual">
+            <div class="detail-gallery-head">
+              <h2>系统架构与处理流程</h2>
+              <p>从观测数据接入、异常识别、盲诊断到证据校验与结果输出。</p>
+            </div>
+            <a class="detail-image-link" href="assets/image.png" target="_blank" rel="noreferrer" aria-label="查看 LiveGuard 总体架构原图">
+              <img src="assets/liveguard-architecture.webp" alt="LiveGuard 数据来源、AI 诊断、证据校验和结果输出的总体架构图" width="1672" height="432" loading="eager" decoding="async" />
+            </a>
+            <figcaption>当前使用 Mock 指标稳定复现异常；CDN、直播云、RTC 与边缘节点作为后续真实数据接入方向。</figcaption>
+          </figure>
+
           <article class="detail-panel detail-wide detail-boundary">
             <h2>当前能力边界</h2>
             <p>当前业务监控指标和故障场景均由 Mock 数据生成；AI 诊断可以真实调用百炼 LLM。系统会在调用模型前移除注入故障类型和预设答案，要求 LLM 仅根据数值快照、趋势与地域分布独立归因。</p>

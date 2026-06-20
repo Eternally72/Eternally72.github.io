@@ -6,6 +6,7 @@
 - `异常注入.png`：告警列表和故障注入面板原图。
 - `AI诊断.png`：AI Copilot 诊断结果原图。
 - `复盘报告.png`：结构化事件复盘报告原图。
+- `image.png`：LiveGuard 总体架构与处理流程原图。
 
 页面使用以下无损 WebP 文件减少传输体积：
 
@@ -13,5 +14,6 @@
 - `liveguard-injection.webp`
 - `liveguard-diagnosis.webp`
 - `liveguard-report.webp`
+- `liveguard-architecture.webp`
 
 三张宽图的网页展示版本均等比例缩放到 1672px 宽，与全站 Hero 参考图一致；AI 诊断图保持原始 1032px 宽度，不做放大。详情页点击截图时会打开对应的中文命名 PNG 原图。
