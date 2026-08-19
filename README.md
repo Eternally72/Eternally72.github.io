@@ -1,6 +1,14 @@
 # 白俊的个人主页
 
-这是一个纯静态个人主页项目，使用 HTML、CSS 和少量 JavaScript 编写。项目不需要 npm、框架、后端或构建工具，可以直接部署到 GitHub Pages。
+这是一个以「自动代码审查」为核心主题的个人主页，介绍白俊在 AI Agent、后端开发与 AI 基础设施方向的实践。项目使用 HTML、CSS 和少量 JavaScript 编写，不依赖 npm、框架、后端或构建工具，可以直接部署到 GitHub Pages。
+
+## 页面内容
+
+- 首页首屏：个人定位与自动代码审查概念界面
+- 关于：学习方向、工程理念与关注领域
+- 核心项目：自动代码审查的目标、流程与设计重点
+- 精选作品：LiveGuard、AIWerewolf、Campus Multi-Agent 与 Microservice Trading
+- 联系方式：邮箱与 GitHub
 
 ## 本地预览
 
@@ -13,6 +21,15 @@
 1. 使用 VS Code 打开项目目录。
 2. 安装 Live Server 扩展。
 3. 右键 `index.html`，选择 **Open with Live Server**。
+
+## 本地检查
+
+```bash
+node tests/site-smoke.mjs
+node --check script.js
+```
+
+冒烟测试会检查所有 HTML 页面中的本地链接、静态资源、锚点、基础文档信息与首页关键区块。
 
 ## 部署到 GitHub Pages
 
@@ -27,11 +44,12 @@
 ## 修改内容
 
 - 个人信息：编辑根目录的 `index.html`，搜索“白俊”、身份描述或邮箱。
+- 核心项目：编辑 `index.html` 中 `#focus` 区块；项目公开后可在此补充源码和演示地址。
 - 项目内容：编辑 `index.html` 中的项目卡片，以及 `projects/` 下对应项目的 `index.html`。
 - GitHub 链接：首页当前指向 `https://github.com/eternally72`，可直接修改对应联系方式卡片的 `href`。
-- 简历链接：将简历文件放入 `assets/`，例如 `assets/resume.pdf`，再替换 Resume 卡片的 `href` 并删除 `data-placeholder-link`。
+- 联系邮箱：当前使用 GitHub 资料中的 `charon2879@gmail.com`，可在 `index.html` 中统一替换。
 - 主题颜色：编辑 `style.css` 顶部 `:root` 中的颜色变量。
-- Hero 图片：使用新的图片替换 `assets/hero-abstract.webp`，建议保持宽幅比例。
+- 项目详情页背景：使用新的图片替换 `assets/hero-abstract.webp`，建议保持宽幅比例。
 
 ## 目录结构
 

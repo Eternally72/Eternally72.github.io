@@ -1,13 +1,8 @@
 const header = document.querySelector("[data-header]");
 const navToggle = document.querySelector("[data-nav-toggle]");
 const navMenu = document.querySelector("[data-nav-menu]");
-const sectionLinks = document.querySelectorAll('[data-nav-menu] a[href^="#"]');
-const sections = Array.from(sectionLinks)
-  .map((link) => document.querySelector(link.getAttribute("href")))
-  .filter(Boolean);
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// 年份和导航状态属于所有页面共用的基础交互。
 document.querySelectorAll("[data-year]").forEach((item) => {
   item.textContent = new Date().getFullYear();
 });
@@ -16,19 +11,25 @@ let headerFrame = 0;
 let headerIsScrolled = null;
 
 const updateHeader = () => {
-  const nextState = window.scrollY > 16;
+  const nextState = window.scrollY > 14;
+
   if (nextState !== headerIsScrolled) {
     header?.classList.toggle("is-scrolled", nextState);
     headerIsScrolled = nextState;
   }
+
   headerFrame = 0;
 };
 
 updateHeader();
-window.addEventListener("scroll", () => {
-  if (headerFrame) return;
-  headerFrame = window.requestAnimationFrame(updateHeader);
-}, { passive: true });
+window.addEventListener(
+  "scroll",
+  () => {
+    if (headerFrame) return;
+    headerFrame = window.requestAnimationFrame(updateHeader);
+  },
+  { passive: true }
+);
 
 if (navToggle && navMenu) {
   const closeMenu = () => {
@@ -39,47 +40,99 @@ if (navToggle && navMenu) {
     navToggle.setAttribute("aria-label", "打开导航菜单");
   };
 
+  const openMenu = () => {
+    navMenu.classList.add("is-open");
+    navToggle.classList.add("is-open");
+    header?.classList.add("menu-open");
+    navToggle.setAttribute("aria-expanded", "true");
+    navToggle.setAttribute("aria-label", "关闭导航菜单");
+  };
+
   navToggle.addEventListener("click", () => {
-    const isOpen = navMenu.classList.toggle("is-open");
-    navToggle.classList.toggle("is-open", isOpen);
-    header?.classList.toggle("menu-open", isOpen);
-    navToggle.setAttribute("aria-expanded", String(isOpen));
-    navToggle.setAttribute("aria-label", isOpen ? "关闭导航菜单" : "打开导航菜单");
+    if (navMenu.classList.contains("is-open")) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
   });
 
-  navMenu.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+  navMenu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && navMenu.classList.contains("is-open")) {
+      closeMenu();
+      navToggle.focus();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!navMenu.classList.contains("is-open")) return;
+    if (navMenu.contains(event.target) || navToggle.contains(event.target)) return;
+    closeMenu();
+  });
+
+  window.addEventListener("resize", () => {
+    const desktopNavigationIsVisible =
+      window.getComputedStyle(navToggle).display === "none";
+
+    if (desktopNavigationIsVisible) closeMenu();
+  });
 }
 
-// 首页按当前可见区块高亮导航，项目详情页会自动跳过。
-if ("IntersectionObserver" in window && sections.length > 0) {
-  const observer = new IntersectionObserver(
+const sectionLinks = Array.from(
+  document.querySelectorAll('[data-nav-menu] a[href^="#"]')
+);
+const observedSections = sectionLinks
+  .map((link) => document.querySelector(link.getAttribute("href")))
+  .filter(Boolean);
+
+if ("IntersectionObserver" in window && observedSections.length > 0) {
+  const sectionObserver = new IntersectionObserver(
     (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        sectionLinks.forEach((link) => {
-          link.classList.toggle("is-active", link.getAttribute("href") === `#${entry.target.id}`);
-        });
+      const visibleEntry = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+      if (!visibleEntry) return;
+
+      sectionLinks.forEach((link) => {
+        link.classList.toggle(
+          "is-active",
+          link.getAttribute("href") === `#${visibleEntry.target.id}`
+        );
       });
     },
-    { rootMargin: "-38% 0px -52% 0px", threshold: 0.01 }
+    {
+      rootMargin: "-32% 0px -55% 0px",
+      threshold: [0.01, 0.2, 0.5],
+    }
   );
 
-  sections.forEach((section) => observer.observe(section));
+  observedSections.forEach((section) => sectionObserver.observe(section));
 }
 
-document.querySelectorAll("[data-placeholder-link]").forEach((link) => {
-  link.addEventListener("click", (event) => event.preventDefault());
-});
+const revealItems = document.querySelectorAll("[data-reveal]");
 
-if (!reducedMotion) {
-  // 仅保留一圈轻量扩散，避免粒子堆叠造成视觉噪声。
-  window.addEventListener("pointerdown", (event) => {
-    if (event.button !== 0) return;
-    const ripple = document.createElement("span");
-    ripple.className = "click-ripple";
-    ripple.style.left = `${event.clientX}px`;
-    ripple.style.top = `${event.clientY}px`;
-    document.body.appendChild(ripple);
-    window.setTimeout(() => ripple.remove(), 660);
-  }, { passive: true });
+if (!reducedMotion && "IntersectionObserver" in window && revealItems.length > 0) {
+  document.documentElement.classList.add("reveal-ready");
+
+  const revealObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        observer.unobserve(entry.target);
+      });
+    },
+    {
+      rootMargin: "0px 0px -8% 0px",
+      threshold: 0.08,
+    }
+  );
+
+  revealItems.forEach((item) => revealObserver.observe(item));
+} else {
+  revealItems.forEach((item) => item.classList.add("is-visible"));
 }
