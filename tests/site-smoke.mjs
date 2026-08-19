@@ -91,12 +91,74 @@ assert.match(
   /name=["']description["'][^>]*content=["'][^"']*白俊的个人主页/,
   "homepage: description is not person-first"
 );
-assert.match(homepage, /你好[，,]\s*我是白俊/, "homepage: personal introduction is missing");
+assert.match(homepage, /<h1[^>]*>\s*白俊/, "homepage: subject name is missing from h1");
+assert.match(homepage, /白俊是一名计算机科学学生/, "homepage: third-person identity is missing");
 assert.match(homepage, /计算机科学/, "homepage: education identity is missing");
 assert.match(homepage, /AI Agent/, "homepage: AI Agent focus is missing");
 assert.match(homepage, /后端开发/, "homepage: backend focus is missing");
 assert.match(homepage, /AI Infrastructure/, "homepage: AI infrastructure focus is missing");
 assert.match(homepage, /自动代码审查/, "homepage: missing featured project");
+assert.match(homepage, /阶段成果/, "homepage: featured project results are missing");
+assert.match(homepage, /开发中/, "homepage: project status is missing");
+const bodyMarkup = homepage.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i)?.[1];
+assert.ok(bodyMarkup, "homepage: body content is missing");
+
+const namedHtmlEntities = new Map([
+  ["amp", "&"],
+  ["apos", "'"],
+  ["gt", ">"],
+  ["lt", "<"],
+  ["nbsp", " "],
+  ["quot", '"'],
+]);
+const decodeHtmlEntities = (text) =>
+  text.replace(/&(#x[\da-f]+|#\d+|[a-z]+);/gi, (entity, value) => {
+    if (value.toLowerCase().startsWith("#x")) {
+      return String.fromCodePoint(parseInt(value.slice(2), 16));
+    }
+    if (value.startsWith("#")) return String.fromCodePoint(parseInt(value.slice(1), 10));
+    return namedHtmlEntities.get(value.toLowerCase()) ?? entity;
+  });
+assert.equal(
+  decodeHtmlEntities("&#X6211;"),
+  "我",
+  "homepage test: uppercase hexadecimal HTML entity decoding failed"
+);
+const bodyNarrativeText = decodeHtmlEntities(
+  bodyMarkup
+    .replace(/<!--[\s\S]*?-->/g, " ")
+    .replace(/<(script|style|template|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+);
+const normalizeNarrativeWord = (word) =>
+  word.toLowerCase().replace(/[’‘]/g, "'");
+assert.equal(
+  normalizeNarrativeWord("I’m"),
+  "i'm",
+  "homepage test: typographic apostrophe normalization failed"
+);
+const narrativeWords = [
+  ...new Intl.Segmenter("zh-CN", { granularity: "word" }).segment(bodyNarrativeText),
+]
+  .filter(({ isWordLike }) => isWordLike)
+  .map(({ segment }) => normalizeNarrativeWord(segment));
+const conversationalPronouns = new Set([
+  "i", "i'd", "i'll", "i'm", "i've", "me", "mine", "my", "myself",
+  "our", "ours", "ourselves", "us", "we", "we'd", "we'll", "we're", "we've",
+  "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself", "yourselves", "let's",
+  "我", "我的", "我们", "我们的", "本人",
+  "你", "你的", "你们", "你们的", "你好",
+  "您", "您的", "您好",
+  "咱", "咱的", "咱俩", "咱们", "咱们的",
+]);
+const narrationViolations = [
+  ...new Set(narrativeWords.filter((word) => conversationalPronouns.has(word))),
+];
+assert.deepEqual(
+  narrationViolations,
+  [],
+  `homepage: conversational narration remains (${narrationViolations.join(", ")})`
+);
 assert.equal(
   (homepage.match(/data-featured-work/g) || []).length,
   1,
