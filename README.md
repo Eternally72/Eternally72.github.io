@@ -46,7 +46,17 @@ node --check script.js
 - 导航、滚动显现、指针光效：`script.js`
 - 联系邮箱：在 `index.html` 中替换 `charon2879@gmail.com`
 
-`projects/` 和 `style.css` 保留历史页面，但不会被主页引用或加载。
+## 目录结构
+
+```text
+.
+├── index.html
+├── system.css
+├── script.js
+├── README.md
+└── tests/
+    └── site-smoke.mjs
+```
 
 ## 部署到 GitHub Pages
 

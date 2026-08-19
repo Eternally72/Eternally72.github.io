@@ -15,7 +15,15 @@ const walk = (directory) =>
 
 const allFiles = walk(root);
 const htmlFiles = allFiles.filter((path) => extname(path) === ".html");
-assert.ok(htmlFiles.length >= 5, "expected the homepage and project detail pages");
+assert.equal(htmlFiles.length, 1, "expected the homepage to be the only HTML page");
+
+for (const legacyPath of ["projects", "assets", "style.css"]) {
+  assert.equal(
+    existsSync(join(root, legacyPath)),
+    false,
+    `legacy path remains: ${legacyPath}`
+  );
+}
 
 const pages = htmlFiles.map((htmlFile) => ({
   html: readFileSync(htmlFile, "utf8"),
@@ -138,4 +146,4 @@ for (const className of homepageClassNames) {
   );
 }
 
-console.log(`Site smoke test passed: ${htmlFiles.length} HTML pages checked.`);
+console.log("Site smoke test passed: 1 HTML page checked.");
