@@ -80,11 +80,51 @@ const homepage = pages.find(
 )?.html;
 assert.ok(homepage, "homepage: index.html was not discovered");
 
-for (const sectionId of ["home", "about", "focus", "projects", "contact"]) {
+for (const sectionId of ["home", "about", "approach", "work", "contact"]) {
   assert.match(homepage, new RegExp(`id=["']${sectionId}["']`), `homepage: missing #${sectionId}`);
 }
 
+assert.match(homepage, /<body\s+class=["']personal-page["']>/, "homepage: personal page theme is missing");
+assert.match(homepage, /<title>白俊[^<]*<\/title>/, "homepage: title is not person-first");
+assert.match(
+  homepage,
+  /name=["']description["'][^>]*content=["'][^"']*白俊的个人主页/,
+  "homepage: description is not person-first"
+);
+assert.match(homepage, /你好[，,]\s*我是白俊/, "homepage: personal introduction is missing");
+assert.match(homepage, /计算机科学/, "homepage: education identity is missing");
+assert.match(homepage, /AI Agent/, "homepage: AI Agent focus is missing");
+assert.match(homepage, /后端开发/, "homepage: backend focus is missing");
+assert.match(homepage, /AI Infrastructure/, "homepage: AI infrastructure focus is missing");
 assert.match(homepage, /自动代码审查/, "homepage: missing featured project");
+assert.equal(
+  (homepage.match(/data-featured-work/g) || []).length,
+  1,
+  "homepage: expected exactly one featured project"
+);
+assert.ok(
+  homepage.indexOf('id="about"') < homepage.indexOf("data-featured-work"),
+  "homepage: personal introduction must appear before the featured project"
+);
+assert.doesNotMatch(
+  homepage,
+  /System Overview|Review Pipeline|System Architecture/,
+  "homepage: product landing-page narrative remains"
+);
+assert.doesNotMatch(
+  homepage,
+  /<blockquote\b/i,
+  "homepage: unverified first-person quotation remains"
+);
+const navToggleTag = homepage.match(/<button\s[^>]*data-nav-toggle[^>]*>/i)?.[0];
+assert.ok(navToggleTag, "homepage: navigation toggle is missing");
+const controlledNavigationId = navToggleTag.match(/aria-controls=["']([^"']+)["']/i)?.[1];
+assert.ok(controlledNavigationId, "homepage: navigation toggle is missing aria-controls");
+assert.match(
+  homepage,
+  new RegExp(`id=["']${controlledNavigationId}["']`),
+  "homepage: aria-controls target is missing"
+);
 assert.match(homepage, /href=["']https:\/\/github\.com\/Eternally72["']/, "homepage: missing GitHub link");
 assert.doesNotMatch(homepage, /data-placeholder-link/, "homepage: placeholder link remains");
 assert.doesNotMatch(
@@ -125,10 +165,36 @@ for (const cssFile of cssFiles) {
 
 const homepageCss = stylesheets.get(join(root, "system.css"));
 assert.ok(homepageCss, "system.css: stylesheet was not discovered");
+const customProperties = [
+  ...homepageCss.matchAll(/^\s*(--[a-z0-9-]+)\s*:/gim),
+].map((match) => match[1]);
+
+for (const customProperty of customProperties) {
+  assert.match(
+    homepageCss,
+    new RegExp(`var\\(${customProperty}(?:[,\\)])`),
+    `system.css: unused custom property ${customProperty}`
+  );
+}
 assert.doesNotMatch(
   homepageCss,
   /url\s*\(/i,
   "system.css: image or external asset URL remains"
+);
+assert.match(
+  homepageCss,
+  /@media\s*\(max-width:\s*820px\)/,
+  "system.css: tablet breakpoint is missing"
+);
+assert.match(
+  homepageCss,
+  /@media\s*\(max-width:\s*560px\)/,
+  "system.css: mobile breakpoint is missing"
+);
+assert.match(
+  homepageCss,
+  /@media\s*\(prefers-reduced-motion:\s*reduce\)/,
+  "system.css: reduced-motion fallback is missing"
 );
 
 const homepageClassNames = [

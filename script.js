@@ -138,9 +138,9 @@ if (!reducedMotion && "IntersectionObserver" in window && revealItems.length > 0
 }
 
 const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-const systemPage = document.body.classList.contains("system-page");
+const personalPage = document.body.classList.contains("personal-page");
 
-if (systemPage && finePointer && !reducedMotion) {
+if (personalPage && finePointer && !reducedMotion) {
   let pointerFrame = 0;
   let pointerX = window.innerWidth / 2;
   let pointerY = window.innerHeight / 3;
