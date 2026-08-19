@@ -3,29 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="白俊的个人主页。计算机科学学生，专注 AI Agent、后端开发与 AI 基础设施，当前主要探索自动代码审查。" />
+  <meta name="description" content="白俊的自动代码审查系统主页：围绕变更理解、仓库上下文、风险识别与可执行反馈，探索 AI 如何真正参与软件工程。" />
   <meta name="author" content="白俊" />
-  <meta name="theme-color" content="#f6faf7" />
+  <meta name="theme-color" content="#071712" />
   <meta name="color-scheme" content="light" />
-  <meta property="og:title" content="白俊｜AI Agent & Backend Developer" />
-  <meta property="og:description" content="让 AI 真正参与软件工程。探索自动代码审查、智能体系统与可靠后端。" />
+  <meta property="og:title" content="自动代码审查系统｜白俊" />
+  <meta property="og:description" content="让每一次代码变更，在合并前被真正理解。" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://eternally72.github.io/" />
-  <meta property="og:image" content="https://eternally72.github.io/assets/hero-abstract.png" />
   <link rel="canonical" href="https://eternally72.github.io/" />
-  <title>白俊｜AI Agent & Backend Developer</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>自动代码审查系统｜白俊</title>
+  <link rel="stylesheet" href="system.css" />
 </head>
-<body>
+<body class="system-page">
   <a class="skip-link" href="#main-content">跳到主要内容</a>
 
   <header class="site-header" data-header>
     <nav class="nav container" aria-label="主导航">
-      <a class="brand" href="#home" aria-label="白俊的个人主页">
-        <span class="brand-mark" aria-hidden="true">白</span>
+      <a class="brand" href="#home" aria-label="白俊的自动代码审查系统主页">
+        <span class="brand-glyph" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><path d="m11 9-6 7 6 7M21 9l6 7-6 7M18 6l-4 20" /></svg>
+        </span>
         <span class="brand-copy">
-          <strong>白俊</strong>
-          <small>AI · Backend</small>
+          <strong>BAI JUN</strong>
+          <small>Automated Code Review</small>
         </span>
       </a>
 
@@ -34,334 +35,390 @@
       </button>
 
       <div class="nav-links" data-nav-menu>
-        <a href="#about">关于</a>
-        <a href="#focus">核心项目</a>
-        <a href="#projects">其他作品</a>
+        <a href="#about">系统概览</a>
+        <a href="#focus">审查流程</a>
+        <a href="#projects">系统架构</a>
         <a href="#contact">联系</a>
       </div>
     </nav>
   </header>
 
   <main id="main-content">
-    <section id="home" class="hero" aria-labelledby="hero-title">
-      <div class="hero-grid" aria-hidden="true"></div>
-      <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
-      <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+    <section id="home" class="system-hero" aria-labelledby="hero-title">
+      <div class="hero-code-grid" aria-hidden="true"></div>
+      <div class="hero-scan" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
 
       <div class="container hero-layout">
         <div class="hero-copy" data-reveal>
           <p class="hero-kicker">
-            <span class="status-dot" aria-hidden="true"></span>
-            Building at the intersection of AI &amp; software
+            <span class="live-dot" aria-hidden="true"></span>
+            Personal system project
+            <span class="kicker-separator" aria-hidden="true">/</span>
+            In development
           </p>
-          <h1 id="hero-title">让 AI 真正参与<br /><span>软件工程。</span></h1>
+
+          <h1 id="hero-title">
+            让每一次代码变更，
+            <span>在合并前被真正理解。</span>
+          </h1>
+
           <p class="hero-lead">
-            你好，我是白俊，一名计算机科学学生。专注 AI Agent、后端开发与 AI 基础设施，
-            当前正在构建面向真实研发流程的自动代码审查项目。
+            我是白俊，正在构建一个面向 Pull Request 工作流的自动代码审查系统。
+            它关注的不只是“代码有没有问题”，更关注问题发生在哪里、为什么值得注意，以及开发者下一步可以做什么。
           </p>
 
           <div class="hero-actions">
             <a class="button button-primary" href="#focus">
-              探索核心项目
-              <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M5 10h10M11 6l4 4-4 4" /></svg>
+              查看审查流程
+              <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M4 10h12M12 6l4 4-4 4" /></svg>
             </a>
-            <a class="button button-ghost" href="https://github.com/Eternally72" target="_blank" rel="noreferrer">
-              <svg class="button-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2.8a9.4 9.4 0 0 0-3 18.3c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 0 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-4.7 0-1 .4-1.9 1-2.5-.1-.3-.4-1.3.1-2.5 0 0 .8-.3 2.6 1a9 9 0 0 1 4.8 0c1.8-1.2 2.6-1 2.6-1 .5 1.2.2 2.2.1 2.5.7.6 1 1.5 1 2.5 0 3.6-2.4 4.4-4.6 4.7.4.3.7.9.7 1.8v2.6c0 .3.2.6.7.5A9.4 9.4 0 0 0 12 2.8Z" /></svg>
+            <a class="button button-secondary" href="https://github.com/Eternally72" target="_blank" rel="noreferrer">
+              <svg class="github-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2.8a9.4 9.4 0 0 0-3 18.3c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 0 1.5 1 1.5 1 .9 1.5 2.3 1.1 2.9.8.1-.6.3-1.1.6-1.3-2.2-.3-4.6-1.1-4.6-4.7 0-1 .4-1.9 1-2.5-.1-.3-.4-1.3.1-2.5 0 0 .8-.3 2.6 1a9 9 0 0 1 4.8 0c1.8-1.2 2.6-1 2.6-1 .5 1.2.2 2.2.1 2.5.7.6 1 1.5 1 2.5 0 3.6-2.4 4.4-4.6 4.7.4.3.7.9.7 1.8v2.6c0 .3.2.6.7.5A9.4 9.4 0 0 0 12 2.8Z" /></svg>
               GitHub
             </a>
           </div>
 
-          <ul class="hero-meta" aria-label="个人方向">
-            <li><span>01</span> Computer Science</li>
-            <li><span>02</span> AI Agent</li>
-            <li><span>03</span> Backend &amp; Infra</li>
-          </ul>
+          <dl class="hero-signals" aria-label="系统关注点">
+            <div><dt>INPUT</dt><dd>Pull Request</dd></div>
+            <div><dt>CORE</dt><dd>Context + Reasoning</dd></div>
+            <div><dt>OUTPUT</dt><dd>Actionable Review</dd></div>
+          </dl>
         </div>
 
-        <div class="review-stage" aria-hidden="true" data-reveal>
-          <div class="review-orbit review-orbit-top">
-            <span class="orbit-icon">✓</span>
-            <span><small>Interface preview</small><strong>Review concept</strong></span>
+        <div class="hero-visual" data-reveal aria-hidden="true">
+          <div class="signal-chip signal-chip-context">
+            <span class="signal-icon">C</span>
+            <span><small>Context</small><strong>Repository linked</strong></span>
           </div>
 
-          <div class="review-window">
-            <div class="review-toolbar">
-              <div class="window-dots"><span></span><span></span><span></span></div>
-              <span class="review-file">pull / feature-review</span>
-              <span class="review-pr">Concept UI</span>
+          <div class="review-console" data-tilt>
+            <div class="console-toolbar">
+              <div class="console-dots"><span></span><span></span><span></span></div>
+              <span class="console-title">AUTOREVIEW / CONCEPT INTERFACE</span>
+              <span class="console-mode">PREVIEW</span>
             </div>
 
-            <div class="review-summary">
-              <div>
-                <span class="review-logo">A</span>
-                <span><small>Automated Review · Mockup</small><strong>Example analysis</strong></span>
+            <div class="console-repository">
+              <div class="repository-mark">
+                <svg viewBox="0 0 24 24"><path d="M7 4v12a4 4 0 0 0 4 4h6M7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17 4v7l-3-2" /></svg>
               </div>
-              <span class="review-badge">Mock</span>
+              <div><small>Incoming change</small><strong>feature / safer-review</strong></div>
+              <span class="repository-state"><i></i> analysing</span>
             </div>
 
-            <div class="diff-panel">
-              <div class="diff-filebar">
-                <span>review/engine.ts</span>
-                <span class="diff-count"><i>+8</i><b>−2</b></span>
+            <div class="console-tabs">
+              <span>Overview</span>
+              <span class="is-selected">Diff</span>
+              <span>Signals</span>
+            </div>
+
+            <div class="diff-surface">
+              <div class="diff-heading">
+                <span>src/review/orchestrator.ts</span>
+                <span><i>+6</i><b>−1</b></span>
               </div>
-              <div class="code-line"><span>41</span><i> </i><code>const context = await collectContext(diff);</code></div>
-              <div class="code-line removed"><span>42</span><i>−</i><code>return model.review(diff);</code></div>
-              <div class="code-line added"><span>42</span><i>+</i><code>const signal = await analyse(diff, context);</code></div>
-              <div class="code-line added"><span>43</span><i>+</i><code>return publishReview(signal);</code></div>
-              <div class="code-line"><span>44</span><i> </i><code>}</code></div>
+              <div class="diff-row"><span>38</span><i></i><code>const context = await repository.resolve(diff);</code></div>
+              <div class="diff-row removed"><span>39</span><i>−</i><code>return reviewer.run(diff);</code></div>
+              <div class="diff-row added"><span>39</span><i>+</i><code>const evidence = await reviewer.run(diff, context);</code></div>
+              <div class="diff-row added"><span>40</span><i>+</i><code>return output.publish(evidence);</code></div>
+              <div class="diff-row"><span>41</span><i></i><code>}</code></div>
+              <span class="scan-cursor"></span>
             </div>
 
-            <div class="review-comment">
-              <div class="comment-head">
-                <span class="comment-avatar">AI</span>
-                <strong>Potential reliability issue</strong>
-                <span class="severity">Medium</span>
+            <div class="inline-review">
+              <div class="review-head">
+                <span class="review-agent">AI</span>
+                <strong>Reliability boundary</strong>
+                <span class="review-level">Signal</span>
               </div>
-              <p>外部模型调用缺少超时与降级路径。建议在发布审查结果前补充可恢复策略。</p>
-              <div class="comment-actions"><span>Context aware</span><span>Actionable</span></div>
+              <p>这条调用路径依赖外部能力。建议明确超时、降级与结果校验边界。</p>
+              <div class="review-evidence">
+                <span><i></i> Context attached</span>
+                <span><i></i> Action suggested</span>
+              </div>
             </div>
 
-            <div class="review-footer">
-              <span><i class="footer-dot green"></i>Risk signal</span>
-              <span><i class="footer-dot blue"></i>Suggested action</span>
-              <span>Example only</span>
+            <div class="console-footer">
+              <span><i class="footer-pulse"></i> System blueprint</span>
+              <span>Evidence-first review</span>
             </div>
           </div>
 
-          <div class="review-orbit review-orbit-bottom">
-            <span class="orbit-pulse"></span>
-            <span><small>Design focus</small><strong>Context-aware review</strong></span>
+          <div class="signal-chip signal-chip-output">
+            <span class="signal-icon signal-icon-check">✓</span>
+            <span><small>Output</small><strong>Review prepared</strong></span>
           </div>
         </div>
       </div>
 
-      <a class="scroll-cue" href="#about" aria-label="继续浏览">
-        <span>Scroll to explore</span>
+      <a class="scroll-indicator" href="#about" aria-label="继续浏览系统概览">
+        <span>Explore system</span>
         <i aria-hidden="true"></i>
       </a>
     </section>
 
-    <section id="about" class="section about-section">
+    <div class="signal-marquee" aria-hidden="true">
+      <div class="signal-track">
+        <span>DIFF PARSING</span><i></i>
+        <span>REPOSITORY CONTEXT</span><i></i>
+        <span>RISK SIGNALS</span><i></i>
+        <span>EVIDENCE TRACE</span><i></i>
+        <span>ACTIONABLE FEEDBACK</span><i></i>
+        <span>DIFF PARSING</span><i></i>
+        <span>REPOSITORY CONTEXT</span><i></i>
+        <span>RISK SIGNALS</span><i></i>
+        <span>EVIDENCE TRACE</span><i></i>
+        <span>ACTIONABLE FEEDBACK</span><i></i>
+      </div>
+    </div>
+
+    <section id="about" class="section overview-section">
       <div class="container">
         <header class="section-head" data-reveal>
           <div>
-            <p class="section-label"><span>01</span> About</p>
-            <h2>把想法做成<br />能运行的系统。</h2>
+            <p class="section-label"><span>01</span> System Overview</p>
+            <h2>自动审查不该只是<br />再生成一段文字。</h2>
           </div>
           <p class="section-intro">
-            我关心的不只是模型能做什么，更关心它如何进入真实流程：怎样获得正确上下文、
-            怎样给出可信结果，以及怎样成为可维护的软件能力。
+            真正有用的代码审查，需要把变更放回项目语境里理解。
+            系统的目标，是帮助开发者更早聚焦值得讨论的风险，而不是制造更多噪声。
           </p>
         </header>
 
-        <div class="about-layout">
-          <article class="about-story" data-reveal>
-            <p class="story-lead">
-              我是白俊，计算机科学与技术方向学生。我的实践横跨智能体协作、后端系统与 AI 工程化，
-              喜欢从一个具体问题出发，逐步拆解系统边界、数据流和可靠性机制。
-            </p>
+        <div class="overview-grid">
+          <article class="problem-card" data-reveal>
+            <div class="card-topline">
+              <span>THE PROBLEM</span>
+              <span class="card-code">review.signal / 01</span>
+            </div>
+            <blockquote>
+              “看懂这一行”并不等于<br />
+              <em>“理解这次变更”。</em>
+            </blockquote>
             <p>
-              相比堆叠复杂概念，我更愿意把精力放在清晰的架构、可验证的行为和完整的产品体验上。
-              自动代码审查正是这些兴趣的交点：它需要理解代码，也需要理解工程协作。
+              单独分析 Diff 容易忽略调用关系、项目约束和业务意图。
+              自动审查需要先建立上下文，再判断风险，最后用开发者能够直接行动的方式交付结果。
             </p>
-
-            <div class="discipline-list" aria-label="关注领域">
-              <span>Agent Engineering</span>
-              <span>Backend Systems</span>
-              <span>AI Infrastructure</span>
-              <span>Developer Tools</span>
+            <div class="problem-visual" aria-hidden="true">
+              <span class="code-fragment fragment-one">diff</span>
+              <span class="code-fragment fragment-two">context</span>
+              <span class="code-fragment fragment-three">risk</span>
+              <span class="code-fragment fragment-four">evidence</span>
+              <svg viewBox="0 0 520 170" preserveAspectRatio="none">
+                <path d="M46 85C120 20 173 148 254 84S394 28 474 85" />
+                <circle cx="46" cy="85" r="5" />
+                <circle cx="254" cy="84" r="5" />
+                <circle cx="474" cy="85" r="5" />
+              </svg>
             </div>
           </article>
 
-          <aside class="profile-card" data-reveal>
-            <div class="profile-top">
-              <div class="profile-avatar" aria-hidden="true"><span>BJ</span></div>
-              <span class="profile-availability"><i></i> Open to ideas</span>
-            </div>
-            <div class="profile-name">
-              <h3>白俊 <span>/ Bai Jun</span></h3>
-              <p>Computer Science Student</p>
-            </div>
-            <dl class="profile-facts">
-              <div><dt>Focus</dt><dd>AI × Software Engineering</dd></div>
-              <div><dt>Exploring</dt><dd>Developer Tools</dd></div>
-              <div><dt>GitHub</dt><dd>@Eternally72</dd></div>
-            </dl>
-          </aside>
+          <div class="system-goals">
+            <article data-reveal>
+              <span class="goal-index">01</span>
+              <div>
+                <h3>理解变更</h3>
+                <p>不止读取增删行，也关注变更所在文件、相关代码与项目约束。</p>
+              </div>
+              <span class="goal-mark" aria-hidden="true">↗</span>
+            </article>
+            <article data-reveal>
+              <span class="goal-index">02</span>
+              <div>
+                <h3>识别风险</h3>
+                <p>把正确性、可靠性和可维护性信号，与单纯的风格偏好区分开。</p>
+              </div>
+              <span class="goal-mark" aria-hidden="true">↗</span>
+            </article>
+            <article data-reveal>
+              <span class="goal-index">03</span>
+              <div>
+                <h3>交付行动</h3>
+                <p>指出位置、解释原因、附带依据，并给出可以继续验证或修改的方向。</p>
+              </div>
+              <span class="goal-mark" aria-hidden="true">↗</span>
+            </article>
+          </div>
         </div>
 
-        <div class="principle-grid" data-reveal>
-          <article>
-            <span>01</span>
-            <h3>Build for clarity</h3>
-            <p>让架构、交互和表达都保持清晰，降低理解与维护成本。</p>
-          </article>
-          <article>
-            <span>02</span>
-            <h3>Design for trust</h3>
-            <p>为 AI 输出补充证据、边界和回退机制，而不是只展示答案。</p>
-          </article>
-          <article>
-            <span>03</span>
-            <h3>Learn by shipping</h3>
-            <p>通过可运行、可展示的项目检验理解，并持续迭代。</p>
-          </article>
+        <div class="system-thesis" data-reveal>
+          <span class="thesis-owner">BUILT BY 白俊</span>
+          <p>让 AI 成为评审者的第二视角，而不是最终裁判。</p>
+          <span class="thesis-tag">HUMAN IN THE LOOP</span>
         </div>
       </div>
     </section>
 
-    <section id="focus" class="section featured-section" aria-labelledby="featured-title">
-      <div class="featured-grid" aria-hidden="true"></div>
-      <div class="container featured-content">
-        <header class="featured-head" data-reveal>
-          <p class="section-label section-label-light"><span>02</span> Featured Project</p>
-          <span class="project-state"><i></i> Active exploration</span>
+    <section id="focus" class="section pipeline-section" aria-labelledby="pipeline-title">
+      <div class="pipeline-grid-bg" aria-hidden="true"></div>
+      <div class="container pipeline-content">
+        <header class="dark-section-head" data-reveal>
+          <div>
+            <p class="section-label section-label-dark"><span>02</span> Review Pipeline</p>
+            <h2 id="pipeline-title">从一次 Pull Request，<br />到一组可执行的审查意见。</h2>
+          </div>
+          <p>
+            这是一条围绕“理解—判断—验证—交付”设计的审查链路。
+            每一步都保留输入、依据与结果，便于追踪系统为什么给出某条建议。
+          </p>
         </header>
 
-        <div class="featured-layout">
-          <div class="featured-copy" data-reveal>
-            <p class="featured-overline">AUTOMATED CODE REVIEW</p>
-            <h2 id="featured-title">自动代码审查</h2>
-            <p class="featured-lead">
-              让每一次代码变更，在进入人工评审前，先得到一轮理解上下文、识别风险并给出可执行建议的自动审查。
-            </p>
-            <p>
-              项目围绕 Pull Request 工作流展开，重点探索如何组合变更解析、仓库上下文、工程规则与大模型能力，
-              将“泛泛而谈”的回答变成定位明确、理由充分、方便开发者采取行动的审查意见。
-            </p>
-            <div class="featured-tags" aria-label="项目关键词">
-              <span>LLM</span><span>Git Workflow</span><span>Static Analysis</span><span>Developer Experience</span>
-            </div>
-            <a class="text-link text-link-light" href="mailto:charon2879@gmail.com?subject=Automated%20Code%20Review">
-              交流这个项目
-              <svg aria-hidden="true" viewBox="0 0 20 20"><path d="M5 10h10M11 6l4 4-4 4" /></svg>
-            </a>
-          </div>
+        <ol class="pipeline-steps" aria-label="自动代码审查流程" data-reveal>
+          <li>
+            <span class="step-number">01</span>
+            <span class="step-icon">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 4v12a4 4 0 0 0 4 4h6M7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17 4v7l-3-2" /></svg>
+            </span>
+            <div><small>INGEST</small><h3>读取变更</h3><p>接收提交信息、Diff 和受影响文件。</p></div>
+          </li>
+          <li>
+            <span class="step-number">02</span>
+            <span class="step-icon">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 4 4M8 11h6M11 8v6" /></svg>
+            </span>
+            <div><small>CONTEXT</small><h3>补全语境</h3><p>关联仓库结构、相关代码和工程规则。</p></div>
+          </li>
+          <li>
+            <span class="step-number">03</span>
+            <span class="step-icon">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.4 8 8 9 4.6-1 8-4 8-9V7l-8-4Z" /><path d="m9 12 2 2 4-5" /></svg>
+            </span>
+            <div><small>ANALYSE</small><h3>分析风险</h3><p>组合规则信号与模型推理形成候选发现。</p></div>
+          </li>
+          <li>
+            <span class="step-number">04</span>
+            <span class="step-icon">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 12.5 9.2 17 19 7" /><path d="M12 3a9 9 0 1 0 9 9" /></svg>
+            </span>
+            <div><small>VERIFY</small><h3>校验证据</h3><p>检查建议是否有代码上下文和明确依据支撑。</p></div>
+          </li>
+          <li>
+            <span class="step-number">05</span>
+            <span class="step-icon">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 14a3 3 0 0 1-3 3H9l-5 4V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7Z" /><path d="M8 9h8M8 13h5" /></svg>
+            </span>
+            <div><small>DELIVER</small><h3>交付反馈</h3><p>按位置和重要程度组织行级建议与总结。</p></div>
+          </li>
+        </ol>
 
-          <div class="featured-console" data-reveal aria-label="自动代码审查项目流程概览">
-            <div class="console-top">
-              <span>review.pipeline</span>
-              <span class="console-live"><i></i> design focus</span>
-            </div>
-            <ol class="pipeline-list">
-              <li>
-                <span class="pipeline-index">01</span>
-                <span class="pipeline-icon">
-                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 4v12a4 4 0 0 0 4 4h6M7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm10 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4ZM17 4v7l-3-2" /></svg>
-                </span>
-                <span><strong>读取变更</strong><small>解析提交、Diff 与受影响文件</small></span>
-              </li>
-              <li>
-                <span class="pipeline-index">02</span>
-                <span class="pipeline-icon">
-                  <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6" /><path d="m16 16 4 4M8 11h6M11 8v6" /></svg>
-                </span>
-                <span><strong>补全上下文</strong><small>关联调用关系、规范与项目知识</small></span>
-              </li>
-              <li>
-                <span class="pipeline-index">03</span>
-                <span class="pipeline-icon">
-                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 4 7v5c0 5 3.4 8 8 9 4.6-1 8-4 8-9V7l-8-4Z" /><path d="m9 12 2 2 4-5" /></svg>
-                </span>
-                <span><strong>识别风险</strong><small>协同规则信号与模型推理</small></span>
-              </li>
-              <li>
-                <span class="pipeline-index">04</span>
-                <span class="pipeline-icon">
-                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 14a3 3 0 0 1-3 3H9l-5 4V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v7Z" /><path d="M8 9h8M8 13h5" /></svg>
-                </span>
-                <span><strong>交付建议</strong><small>按位置与严重程度回写审查意见</small></span>
-              </li>
-            </ol>
-            <div class="console-result">
-              <span class="result-mark">✓</span>
-              <span><small>Desired outcome</small><strong>更早发现风险，更顺畅地完成评审</strong></span>
-            </div>
+        <div class="trace-console" data-reveal>
+          <div class="trace-toolbar">
+            <span><i></i> REVIEW TRACE</span>
+            <span>DESIGN PREVIEW · NO LIVE DATA</span>
           </div>
-        </div>
-
-        <div class="focus-metrics" data-reveal>
-          <article><small>01 / Context</small><strong>理解项目，而不只看单行代码</strong></article>
-          <article><small>02 / Signal</small><strong>区分风险、建议与风格偏好</strong></article>
-          <article><small>03 / Trust</small><strong>给出依据，也承认能力边界</strong></article>
+          <div class="trace-body">
+            <span class="trace-gutter">01<br />02<br />03<br />04<br />05</span>
+            <div class="trace-lines">
+              <p><span>[ingest]</span> change.diff <i>accepted</i></p>
+              <p><span>[context]</span> repository.scope <i>linked</i></p>
+              <p><span>[analyse]</span> risk.signal <i>evaluated</i></p>
+              <p><span>[verify]</span> evidence.trace <i>attached</i></p>
+              <p><span>[deliver]</span> review.output <i>prepared</i><b class="trace-caret"></b></p>
+            </div>
+            <div class="trace-meter" aria-hidden="true"><span></span></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="projects" class="section projects-section">
+    <section id="projects" class="section architecture-section" aria-labelledby="architecture-title">
       <div class="container">
         <header class="section-head" data-reveal>
           <div>
-            <p class="section-label"><span>03</span> Selected Work</p>
-            <h2>从 Agent 到<br />后端系统。</h2>
+            <p class="section-label"><span>03</span> System Architecture</p>
+            <h2 id="architecture-title">把模型能力放进<br />可验证的工程边界。</h2>
           </div>
           <p class="section-intro">
-            这些项目记录了我对多智能体、可靠 AI 应用和后端工程的持续探索。
-            每个项目都从一个具体场景出发，并尽量形成完整的运行闭环。
+            系统架构围绕五层职责展开。规则信号与模型推理各自发挥作用，
+            最终通过统一的证据和输出层进入代码评审流程。
           </p>
         </header>
 
-        <div class="project-grid">
-          <article class="project-card project-card-mint" data-reveal>
-            <div class="project-card-head">
-              <span class="project-number">01</span>
-              <span class="project-type">AI Reliability</span>
-            </div>
-            <div class="project-symbol" aria-hidden="true">
-              <svg viewBox="0 0 64 64"><path d="M13 44c6-14 12-21 19-21 9 0 10 12 19 12" /><circle cx="14" cy="44" r="4" /><circle cx="32" cy="23" r="4" /><circle cx="51" cy="35" r="4" /></svg>
-            </div>
-            <h3>LiveGuard</h3>
-            <p>把实时音视频指标转化为根因判断、处置建议与复盘报告的 AI 体验巡检助手。</p>
-            <ul class="tag-list" aria-label="技术栈"><li>React</li><li>FastAPI</li><li>LangGraph</li><li>ECharts</li></ul>
-            <a class="project-link" href="projects/liveguard/index.html">查看项目 <span aria-hidden="true">↗</span></a>
-          </article>
+        <div class="architecture-map" data-reveal aria-label="自动代码审查系统架构蓝图">
+          <div class="architecture-caption">
+            <span>ARCHITECTURE BLUEPRINT</span>
+            <span>CONCEPTUAL BOUNDARIES</span>
+          </div>
 
-          <article class="project-card project-card-blue" data-reveal>
-            <div class="project-card-head">
-              <span class="project-number">02</span>
-              <span class="project-type">Multi-Agent</span>
-            </div>
-            <div class="project-symbol" aria-hidden="true">
-              <svg viewBox="0 0 64 64"><circle cx="32" cy="21" r="8" /><circle cx="18" cy="42" r="7" /><circle cx="46" cy="42" r="7" /><path d="m27 27-6 9M37 27l6 9M25 42h14" /></svg>
-            </div>
-            <h3>AIWerewolf</h3>
-            <p>由状态机驱动的多 Agent 狼人杀系统，支持真人、AI 混合对局与完整观战流程。</p>
-            <ul class="tag-list" aria-label="技术栈"><li>Java 21</li><li>Spring Boot</li><li>Vue 3</li><li>WebSocket</li></ul>
-            <div class="project-links">
-              <a class="project-link" href="projects/ai-werewolf/index.html">查看项目 <span aria-hidden="true">↗</span></a>
-              <a class="project-source" href="https://github.com/Eternally72/AIWerewolf" target="_blank" rel="noreferrer" aria-label="在 GitHub 查看 AIWerewolf 源码">GitHub</a>
-            </div>
-          </article>
+          <div class="architecture-flow">
+            <section class="arch-stage">
+              <div class="arch-stage-label"><span>01</span> INPUT</div>
+              <div class="arch-nodes">
+                <article><i class="node-dot"></i><strong>Pull Request</strong><small>事件与元数据</small></article>
+                <article><i class="node-dot"></i><strong>Git Diff</strong><small>代码变更集合</small></article>
+              </div>
+            </section>
 
-          <article class="project-card project-card-lilac" data-reveal>
-            <div class="project-card-head">
-              <span class="project-number">03</span>
-              <span class="project-type">Campus Service</span>
-            </div>
-            <div class="project-symbol" aria-hidden="true">
-              <svg viewBox="0 0 64 64"><path d="M12 27 32 15l20 12-20 12-20-12Z" /><path d="M20 34v11c8 5 16 5 24 0V34M52 27v16" /></svg>
-            </div>
-            <h3>Campus Multi-Agent</h3>
-            <p>面向校园信息与服务场景，通过统一编排协调检索、问答与任务型 Agent。</p>
-            <ul class="tag-list" aria-label="技术栈"><li>Python</li><li>LLM</li><li>RAG</li><li>Agent</li></ul>
-            <div class="project-links">
-              <a class="project-link" href="projects/campus-agent/index.html">查看项目 <span aria-hidden="true">↗</span></a>
-              <a class="project-source" href="https://github.com/Eternally72/campus-multi-agent" target="_blank" rel="noreferrer" aria-label="在 GitHub 查看 Campus Multi-Agent 源码">GitHub</a>
-            </div>
-          </article>
+            <span class="arch-connector" aria-hidden="true"><i></i></span>
 
-          <article class="project-card project-card-sand" data-reveal>
-            <div class="project-card-head">
-              <span class="project-number">04</span>
-              <span class="project-type">Backend System</span>
-            </div>
-            <div class="project-symbol" aria-hidden="true">
-              <svg viewBox="0 0 64 64"><ellipse cx="32" cy="18" rx="18" ry="8" /><path d="M14 18v14c0 4 8 8 18 8s18-4 18-8V18M14 32v14c0 4 8 8 18 8s18-4 18-8V32" /></svg>
-            </div>
-            <h3>Microservice Trading</h3>
-            <p>用于练习服务拆分、数据一致性、可观测性与容器化运行的微服务交易平台。</p>
-            <ul class="tag-list" aria-label="技术栈"><li>Java</li><li>Spring Cloud</li><li>MySQL</li><li>Docker</li></ul>
-            <a class="project-link" href="projects/microservice-trading/index.html">查看项目 <span aria-hidden="true">↗</span></a>
+            <section class="arch-stage">
+              <div class="arch-stage-label"><span>02</span> CONTEXT</div>
+              <div class="arch-nodes">
+                <article><i class="node-dot"></i><strong>Repository</strong><small>相关代码与结构</small></article>
+                <article><i class="node-dot"></i><strong>Project Rules</strong><small>工程约束与规范</small></article>
+              </div>
+            </section>
+
+            <span class="arch-connector" aria-hidden="true"><i></i></span>
+
+            <section class="arch-stage arch-stage-core">
+              <div class="arch-stage-label"><span>03</span> REVIEW CORE</div>
+              <div class="core-node">
+                <span class="core-rings" aria-hidden="true"><i></i><i></i><i></i></span>
+                <svg aria-hidden="true" viewBox="0 0 32 32"><path d="m11 9-6 7 6 7M21 9l6 7-6 7M18 6l-4 20" /></svg>
+                <strong>Orchestrator</strong>
+                <small>编排 · 路由 · 状态</small>
+              </div>
+            </section>
+
+            <span class="arch-connector" aria-hidden="true"><i></i></span>
+
+            <section class="arch-stage">
+              <div class="arch-stage-label"><span>04</span> REASONING</div>
+              <div class="arch-nodes">
+                <article><i class="node-dot"></i><strong>Rule Signals</strong><small>确定性检查</small></article>
+                <article><i class="node-dot"></i><strong>LLM Reasoning</strong><small>上下文推理</small></article>
+              </div>
+            </section>
+
+            <span class="arch-connector" aria-hidden="true"><i></i></span>
+
+            <section class="arch-stage">
+              <div class="arch-stage-label"><span>05</span> DELIVERY</div>
+              <div class="arch-nodes">
+                <article><i class="node-dot"></i><strong>Inline Notes</strong><small>定位到变更行</small></article>
+                <article><i class="node-dot"></i><strong>Review Summary</strong><small>风险与行动汇总</small></article>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="capability-grid">
+          <article data-reveal>
+            <span class="capability-index">01</span>
+            <div class="capability-icon" aria-hidden="true">⌁</div>
+            <h3>Context-aware</h3>
+            <p>审查意见与仓库结构、相关代码和项目规则保持关联。</p>
+          </article>
+          <article data-reveal>
+            <span class="capability-index">02</span>
+            <div class="capability-icon" aria-hidden="true">◇</div>
+            <h3>Risk-oriented</h3>
+            <p>优先呈现影响正确性、可靠性和维护成本的变化。</p>
+          </article>
+          <article data-reveal>
+            <span class="capability-index">03</span>
+            <div class="capability-icon" aria-hidden="true">◎</div>
+            <h3>Evidence-backed</h3>
+            <p>每条发现都尽量附带位置、上下文与判断依据。</p>
+          </article>
+          <article data-reveal>
+            <span class="capability-index">04</span>
+            <div class="capability-icon" aria-hidden="true">↗</div>
+            <h3>Workflow-native</h3>
+            <p>让结果回到开发者熟悉的 Pull Request 评审流程中。</p>
           </article>
         </div>
       </div>
@@ -370,18 +427,19 @@
     <section id="contact" class="section contact-section">
       <div class="container">
         <div class="contact-panel" data-reveal>
+          <div class="contact-grid-bg" aria-hidden="true"></div>
           <div class="contact-copy">
-            <p class="section-label"><span>04</span> Let’s Connect</p>
-            <h2>有想法，<br />一起聊聊。</h2>
-            <p>欢迎交流自动代码审查、AI Agent、后端工程，或任何值得做成产品的技术想法。</p>
+            <p class="section-label section-label-contact"><span>04</span> Contact</p>
+            <h2>代码审查值得<br />更好的第二视角。</h2>
+            <p>如果你也在关注代码智能、开发者工具或 AI 工程化，欢迎和我交流。</p>
           </div>
-          <div class="contact-links">
-            <a href="mailto:charon2879@gmail.com">
-              <span><small>Email</small><strong>charon2879@gmail.com</strong></span>
+          <div class="contact-actions">
+            <a class="contact-link" href="mailto:charon2879@gmail.com">
+              <span><small>EMAIL</small><strong>charon2879@gmail.com</strong></span>
               <i aria-hidden="true">↗</i>
             </a>
-            <a href="https://github.com/Eternally72" target="_blank" rel="noreferrer">
-              <span><small>GitHub</small><strong>@Eternally72</strong></span>
+            <a class="contact-link" href="https://github.com/Eternally72" target="_blank" rel="noreferrer">
+              <span><small>GITHUB</small><strong>@Eternally72</strong></span>
               <i aria-hidden="true">↗</i>
             </a>
           </div>
@@ -392,8 +450,9 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>© <span data-year></span> 白俊 · Built with curiosity and care.</p>
-      <a href="#home">回到顶部 <span aria-hidden="true">↑</span></a>
+      <p>© <span data-year></span> 白俊 · Automated Code Review System</p>
+      <span class="footer-status"><i></i> System in development</span>
+      <a href="#home">Back to top <span aria-hidden="true">↑</span></a>
     </div>
   </footer>
 

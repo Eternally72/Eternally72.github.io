@@ -136,3 +136,74 @@ if (!reducedMotion && "IntersectionObserver" in window && revealItems.length > 0
 } else {
   revealItems.forEach((item) => item.classList.add("is-visible"));
 }
+
+const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+const systemPage = document.body.classList.contains("system-page");
+
+if (systemPage && finePointer && !reducedMotion) {
+  let pointerFrame = 0;
+  let pointerX = window.innerWidth / 2;
+  let pointerY = window.innerHeight / 3;
+
+  const updatePointerGlow = () => {
+    document.documentElement.style.setProperty("--pointer-x", `${pointerX}px`);
+    document.documentElement.style.setProperty("--pointer-y", `${pointerY}px`);
+    pointerFrame = 0;
+  };
+
+  window.addEventListener(
+    "pointermove",
+    (event) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+
+      if (!pointerFrame) {
+        pointerFrame = window.requestAnimationFrame(updatePointerGlow);
+      }
+    },
+    { passive: true }
+  );
+
+  document.querySelectorAll("[data-tilt]").forEach((element) => {
+    let tiltFrame = 0;
+    let tiltEvent = null;
+
+    const updateTilt = () => {
+      const bounds = element.getBoundingClientRect();
+      const horizontal = (tiltEvent.clientX - bounds.left) / bounds.width;
+      const vertical = (tiltEvent.clientY - bounds.top) / bounds.height;
+      const rotateX = (0.5 - vertical) * 5;
+      const rotateY = (horizontal - 0.5) * 6;
+
+      element.style.setProperty("--tilt-x", `${rotateX.toFixed(2)}deg`);
+      element.style.setProperty("--tilt-y", `${rotateY.toFixed(2)}deg`);
+      element.style.setProperty("--glow-x", `${(horizontal * 100).toFixed(1)}%`);
+      element.style.setProperty("--glow-y", `${(vertical * 100).toFixed(1)}%`);
+      tiltFrame = 0;
+    };
+
+    element.addEventListener(
+      "pointermove",
+      (event) => {
+        tiltEvent = event;
+
+        if (!tiltFrame) {
+          tiltFrame = window.requestAnimationFrame(updateTilt);
+        }
+      },
+      { passive: true }
+    );
+
+    element.addEventListener("pointerleave", () => {
+      if (tiltFrame) {
+        window.cancelAnimationFrame(tiltFrame);
+        tiltFrame = 0;
+      }
+
+      element.style.setProperty("--tilt-x", "0deg");
+      element.style.setProperty("--tilt-y", "0deg");
+      element.style.setProperty("--glow-x", "50%");
+      element.style.setProperty("--glow-y", "50%");
+    });
+  });
+}

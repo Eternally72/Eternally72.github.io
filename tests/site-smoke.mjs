@@ -13,7 +13,8 @@ const walk = (directory) =>
     return statSync(path).isDirectory() ? walk(path) : [path];
   });
 
-const htmlFiles = walk(root).filter((path) => extname(path) === ".html");
+const allFiles = walk(root);
+const htmlFiles = allFiles.filter((path) => extname(path) === ".html");
 assert.ok(htmlFiles.length >= 5, "expected the homepage and project detail pages");
 
 const pages = htmlFiles.map((htmlFile) => ({
@@ -66,7 +67,10 @@ for (const { html, htmlFile, relativeName } of pages) {
   }
 }
 
-const homepage = readFileSync(join(root, "index.html"), "utf8");
+const homepage = pages.find(
+  ({ htmlFile }) => htmlFile === join(root, "index.html")
+)?.html;
+assert.ok(homepage, "homepage: index.html was not discovered");
 
 for (const sectionId of ["home", "about", "focus", "projects", "contact"]) {
   assert.match(homepage, new RegExp(`id=["']${sectionId}["']`), `homepage: missing #${sectionId}`);
@@ -75,10 +79,63 @@ for (const sectionId of ["home", "about", "focus", "projects", "contact"]) {
 assert.match(homepage, /自动代码审查/, "homepage: missing featured project");
 assert.match(homepage, /href=["']https:\/\/github\.com\/Eternally72["']/, "homepage: missing GitHub link");
 assert.doesNotMatch(homepage, /data-placeholder-link/, "homepage: placeholder link remains");
+assert.doesNotMatch(
+  homepage,
+  /href=["'][^"']*projects\//,
+  "homepage: legacy project link remains"
+);
+assert.doesNotMatch(
+  homepage,
+  /AIWerewolf|LiveGuard|Campus Multi-Agent|Microservice Trading/,
+  "homepage: unrelated project content remains"
+);
+assert.doesNotMatch(homepage, /<img\b/i, "homepage: image element remains");
+assert.doesNotMatch(
+  homepage,
+  /property=["']og:image["']/i,
+  "homepage: social preview image remains"
+);
+assert.match(
+  homepage,
+  /href=["']system\.css["']/,
+  "homepage: dedicated lightweight stylesheet is missing"
+);
 
-const css = readFileSync(join(root, "style.css"), "utf8");
-const openingBraces = (css.match(/{/g) || []).length;
-const closingBraces = (css.match(/}/g) || []).length;
-assert.equal(openingBraces, closingBraces, "style.css: unbalanced braces");
+const cssFiles = allFiles.filter((path) => extname(path) === ".css");
+const stylesheets = new Map(
+  cssFiles.map((cssFile) => [cssFile, readFileSync(cssFile, "utf8")])
+);
+
+for (const cssFile of cssFiles) {
+  const css = stylesheets.get(cssFile);
+  const openingBraces = (css.match(/{/g) || []).length;
+  const closingBraces = (css.match(/}/g) || []).length;
+  const relativeName = cssFile.slice(root.length + 1);
+
+  assert.equal(openingBraces, closingBraces, `${relativeName}: unbalanced braces`);
+}
+
+const homepageCss = stylesheets.get(join(root, "system.css"));
+assert.ok(homepageCss, "system.css: stylesheet was not discovered");
+assert.doesNotMatch(
+  homepageCss,
+  /url\s*\(/i,
+  "system.css: image or external asset URL remains"
+);
+
+const homepageClassNames = [
+  ...new Set(
+    [...homepage.matchAll(/\sclass=["']([^"']+)["']/g)].flatMap((match) =>
+      match[1].split(/\s+/).filter(Boolean)
+    )
+  ),
+];
+
+for (const className of homepageClassNames) {
+  assert.ok(
+    homepageCss.includes(`.${className}`),
+    `system.css: missing homepage class .${className}`
+  );
+}
 
 console.log(`Site smoke test passed: ${htmlFiles.length} HTML pages checked.`);
