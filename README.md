@@ -1,67 +1,53 @@
 # 白俊的个人主页
 
-这是白俊的 GitHub Pages 个人主页。页面以客观介绍为主线，呈现个人身份、能力方向与工程实践；自动代码审查系统作为唯一代表项目，用于说明相关能力与阶段成果。
-
-主页使用原生 HTML、CSS 和少量 JavaScript 实现，不依赖框架、构建工具、外部字体或图片资源。
-
-## 页面内容
-
-- 首屏：个人身份、技术兴趣与当前状态
-- 个人简介：学习背景、技术取向与实践方式
-- 能力方向：AI Agent、后端开发与 AI Infrastructure
-- 代表项目：自动代码审查系统、能力体现与阶段成果
-- 联系方式：邮箱与 GitHub
-
-## 设计原则
-
-- 先介绍个人身份，再说明能力方向，最后用项目提供证据
-- 全部介绍采用客观第三视角，避免对话式表达和产品说明书式叙事
-- 网格、字标、轨道与卡片均由 HTML、CSS 和内联 SVG 渲染
-- 不使用图片、外部字体或第三方前端依赖
-- 动画使用 transform / opacity，并支持 `prefers-reduced-motion`
-- 指针光效与轻量 3D 倾斜只在精细指针设备上启用
+面向 GitHub Pages 的静态个人网站，展示个人背景、工程能力，以及两个代表项目：多租户 Agent 平台和基于 Skills / Docker 沙箱的自动代码审查 Agent。
 
 ## 本地预览
-
-可以直接打开 `index.html`，也可以启动静态服务器：
 
 ```bash
 python3 -m http.server 4173
 ```
 
-然后访问 `http://127.0.0.1:4173/`。
+打开 http://localhost:4173。也可以直接打开 `index.html`；复制邮箱功能需要 HTTPS 或 localhost，其他内容不依赖 JavaScript。
 
-## 本地检查
+## 页面与内容
+
+- `index.html`：个人信息、项目介绍、架构示意、教育与科研经历、联系方式。
+- `system.css`：配色、字体、响应式布局、首屏入场和悬停反馈。
+- `script.js`：移动导航、当前章节提示、复制邮箱和页脚年份。
+- `assets/`：本地图标、经过字符裁剪的 Noto Sans SC 可变字体及 SIL 许可。
+- `tests/`：静态资源检查、可选的真实浏览器测试。
+- `dev/`：本地参考资料，继续由 `.gitignore` 忽略，不参与发布。
+
+项目资料来自本地源码与文档，个人背景参考简历。代码审查项目 PR #164 的合并状态已于 2026-10-02 核对。平台的 4,028 次请求与 18 项可靠性场景来自 2026-09 历史测试记录；页面注明模拟 / 真实模型请求以及单机压测条件。项目中的界面图为流程示意。
+
+修改介绍和链接时直接编辑 HTML，不需要构建。新增中文字符如果不在字体子集中，会回退到访客的系统字体；大幅修改内容时可重新裁剪 Noto Sans SC。保留 `assets/OFL.txt`。
+
+## 性能与可访问性
+
+原生 HTML、CSS、JavaScript，无框架、运行时第三方请求、外部字体服务或大型图片。主视觉用内联 SVG，只有一次首屏入场和鼠标悬停响应，没有持续动画或逐帧滚动逻辑。章节导航通过 IntersectionObserver 更新。
+
+支持 320px 起的布局、键盘焦点、跳转到正文、减少动态效果偏好、无 JavaScript 阅读及导航。邮箱链接一直可用，复制按钮仅在支持剪贴板的安全上下文出现。
+
+## 检查
+
+基础检查仅需 Node.js：
 
 ```bash
 node tests/site-smoke.mjs
 node --check script.js
+git diff --check
 ```
 
-冒烟测试会检查第三视角叙事、唯一代表项目、阶段成果、本地链接、页面锚点、静态资源、响应式样式约束，以及“零图片”要求。
+浏览器检查为可选开发工具，需要 Python、Playwright 与 Chromium。使用 uv 可以在临时环境中运行：
 
-## 修改内容
-
-- 首页文案和结构：`index.html`
-- 首页视觉和响应式布局：`system.css`
-- 导航、滚动显现、指针光效：`script.js`
-- 联系邮箱：在 `index.html` 中替换 `charon2879@gmail.com`
-
-## 目录结构
-
-```text
-.
-├── index.html
-├── system.css
-├── script.js
-├── README.md
-└── tests/
-    └── site-smoke.mjs
+```bash
+uv run --with playwright python -m playwright install chromium
+uv run --with playwright python tests/browser-check.py --screenshots /tmp/person-page-preview
 ```
 
-## 部署到 GitHub Pages
+测试会启动并关闭临时 HTTP 服务，检查 9 种屏幕宽度、导航与 Escape 交互、复制成功 / 失败、减少动态效果、无 JavaScript 回退、资源加载与浏览器错误。截图输出到指定目录，不写入站点。
 
-1. 将变更推送到 `main` 分支。
-2. 打开仓库的 **Settings > Pages**。
-3. 在 **Build and deployment** 中选择 **Deploy from a branch**。
-4. 选择 `main` 和 `/(root)`，保存后等待部署完成。
+## 发布
+
+将网站文件提交并推送到 GitHub Pages 仓库。在仓库 Settings → Pages 中选择对应分支及根目录即可，无需构建工作流。发布时不要复制 `dev/` 或本地测试工具到公开资源中。
