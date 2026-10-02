@@ -37,3 +37,22 @@ const runtimeBytes = ['index.html', 'system.css', 'script.js', 'assets/favicon.s
 assert.ok(runtimeBytes < 250_000, `Page exceeds 250 KB budget: ${runtimeBytes}`);
 assert.ok(statSync(resolve(root, 'script.js')).size < 8_000, 'JavaScript exceeds 8 KB budget');
 console.log(`Site checks passed. Total local page resources: ${(runtimeBytes / 1024).toFixed(1)} KiB.`);
+
+// Preserve the platform branch explicitly: its implementation is not on main.
+const { projects } = await import('../project-data.js');
+const strings = (value) => typeof value === 'string' ? [value] : value && typeof value === 'object' ? Object.values(value).flatMap(strings) : [];
+for (const url of [...strings(projects), ...[...html.matchAll(/href="([^"]+)"/g)].map((match) => match[1])]) {
+  if (url.startsWith('https://github.com/Eternally72/trpc-agent-service')) {
+    assert.match(url, /\/(?:tree|blob)\/feature\/baijun(?:\/|$)/, `Wrong platform branch: ${url}`);
+  }
+}
+for (const project of Object.values(projects)) {
+  assert.ok(existsSync(resolve(root, project.architecture.image)), 'Missing architecture diagram');
+}
+for (const [, reference] of read('project-details.css').matchAll(/url\(["']?([^"')]+)["']?\)/g)) {
+  assert.ok(existsSync(resolve(root, reference)), `Missing detail asset: ${reference}`);
+}
+const lazyBytes = ['project-details.js','project-data.js','project-diagrams.js','project-details.css','assets/bai-details.woff2','assets/platform-architecture.svg','assets/review-architecture.svg']
+  .reduce((total,file) => total + statSync(resolve(root,file)).size,0);
+assert.ok(lazyBytes < 150_000, `Project details exceed 150 KB budget: ${lazyBytes}`);
+console.log(`Project detail resources: ${(lazyBytes / 1024).toFixed(1)} KiB, loaded on demand.`);
