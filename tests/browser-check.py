@@ -10,16 +10,19 @@ from playwright.sync_api import sync_playwright, expect
 ROOT = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser()
 parser.add_argument('--screenshots', type=Path)
+parser.add_argument('--url', help='Run the same checks against a deployed site')
 args = parser.parse_args()
 
 class QuietHandler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass
 
-handler = functools.partial(QuietHandler, directory=str(ROOT))
-server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), handler)
-threading.Thread(target=server.serve_forever, daemon=True).start()
-url = f'http://127.0.0.1:{server.server_port}/'
+server = None
+if not args.url:
+    handler = functools.partial(QuietHandler, directory=str(ROOT))
+    server = http.server.ThreadingHTTPServer(('127.0.0.1', 0), handler)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+url = args.url or f'http://127.0.0.1:{server.server_port}/'
 
 try:
     with sync_playwright() as p:
@@ -277,5 +280,6 @@ try:
         print(json.dumps({'result':'passed', 'viewport_widths':[320,360,390,620,768,820,1024,1440,1920], 'metrics':metrics, 'particles':particle_metrics, 'details':details_metrics}, ensure_ascii=False))
         browser.close()
 finally:
-    server.shutdown()
-    server.server_close()
+    if server:
+        server.shutdown()
+        server.server_close()

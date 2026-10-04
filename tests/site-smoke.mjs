@@ -7,6 +7,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (name) => readFileSync(resolve(root, name), 'utf8');
 const html = read('index.html');
 const css = read('system.css');
+assert.equal(html.match(/<style id="homepage-styles">\n([\s\S]*?)\n  <\/style>/)?.[1], css.trimEnd(), 'Inline styles are stale: run node scripts/sync-styles.mjs');
+assert.doesNotMatch(html, /<link\b[^>]*rel="stylesheet"/, 'Homepage must paint without waiting for external styles');
 const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
 assert.equal(new Set(ids).size, ids.length, 'Duplicate element IDs');
 assert.equal([...html.matchAll(/<h1\b/g)].length, 1, 'Expected one main heading');
@@ -32,7 +34,7 @@ assert.doesNotMatch(html, /(?:href|src)="[^"\n]*(?:dev\/|\.pdf)/, 'Private resum
 assert.match(css, /prefers-reduced-motion/, 'Reduced-motion support is missing');
 assert.match(css, /focus-visible/, 'Visible keyboard focus is missing');
 assert.match(read('.gitignore'), /(?:^|\n)\/?dev\/?(?:\n|$)/, 'dev must remain ignored');
-const runtimeBytes = ['index.html', 'system.css', 'script.js', 'particles.js', 'assets/favicon.svg', 'assets/bai-sans.woff2']
+const runtimeBytes = ['index.html', 'script.js', 'particles.js', 'assets/favicon.svg', 'assets/bai-sans.woff2']
   .reduce((total, file) => total + statSync(resolve(root, file)).size, 0);
 assert.ok(runtimeBytes < 250_000, `Page exceeds 250 KB budget: ${runtimeBytes}`);
 assert.ok(statSync(resolve(root, 'script.js')).size < 8_000, 'JavaScript exceeds 8 KB budget');
