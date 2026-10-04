@@ -15,6 +15,7 @@ python3 -m http.server 4173
 - `index.html`：个人信息、项目介绍、架构示意、教育与科研经历、联系方式。
 - `system.css`：配色、字体、响应式布局、首屏入场和悬停反馈。
 - `script.js`：移动导航、当前章节提示、复制邮箱、页脚年份，以及项目详情的按需加载与弹窗管理。
+- `particles.js`：首屏分层图周围的轻量粒子、暂停控制与动画生命周期管理。
 - `project-data.js`：两个项目的组件说明、时序说明、验证数据及源码链接。
 - `project-details.js` / `project-details.css`：详情标签页、可点击的架构图、组件说明和验证结果展示。
 - `project-diagrams.js`：预先生成的 SVG 时序图，不依赖图表库。
@@ -41,7 +42,9 @@ python3 -m http.server 4173
 
 ## 性能与可访问性
 
-原生 HTML、CSS、JavaScript，无框架、运行时第三方请求、外部字体服务或大型图片。主视觉用内联 SVG，只有一次首屏入场和鼠标悬停响应，没有持续动画或逐帧滚动逻辑。章节导航通过 IntersectionObserver 更新。
+原生 HTML、CSS、JavaScript，无框架、运行时第三方请求、外部字体服务或大型图片。主视觉用内联 SVG，章节导航通过 IntersectionObserver 更新。
+
+粒子只在首屏分层图周围缓慢流动：宽屏 24 个，窄屏 15 个，Canvas 绘制最多 30 fps，像素密度上限 1.5。鼠标靠近时轻微避让；触屏不追踪手势。离开可视区域、标签页隐藏或打开项目弹窗时取消动画帧，返回后继续。右下角按钮可暂停并记住偏好；系统开启“减少动态效果”时隐藏粒子及控制按钮。不引入粒子库、全屏画布或模糊滤镜。
 
 支持 320px 起的布局、键盘焦点、跳转到正文、减少动态效果偏好、无 JavaScript 阅读及导航。邮箱链接一直可用，复制按钮仅在支持剪贴板的安全上下文出现。
 
@@ -52,6 +55,7 @@ python3 -m http.server 4173
 ```bash
 node tests/site-smoke.mjs
 node --check script.js
+node --check particles.js
 git diff --check
 ```
 
@@ -62,7 +66,7 @@ uv run --with playwright python -m playwright install chromium
 uv run --with playwright python tests/browser-check.py --screenshots /tmp/person-page-preview
 ```
 
-测试会启动并关闭临时 HTTP 服务，检查 9 种首页屏幕宽度、导航与 Escape 交互、复制成功 / 失败、减少动态效果、无 JavaScript 回退、资源加载与浏览器错误；也覆盖六个详情入口、全部架构节点、标签页键盘切换、弹窗焦点和滚动恢复、手机布局、按需加载、慢请求切换及加载失败回退。截图输出到指定目录，不写入站点。
+测试会启动并关闭临时 HTTP 服务，检查 9 种首页屏幕宽度、导航与 Escape 交互、复制成功 / 失败、减少动态效果、无 JavaScript 回退、资源加载与浏览器错误；也覆盖六个详情入口、全部架构节点、标签页键盘切换、弹窗焦点和滚动恢复、手机布局、按需加载、慢请求切换及加载失败回退。粒子检查涵盖绘制帧率、暂停偏好保存、离屏 / 页面隐藏 / 弹窗打开时停止调度，以及动态切换系统动效偏好。截图输出到指定目录，不写入站点。
 
 ## 发布
 

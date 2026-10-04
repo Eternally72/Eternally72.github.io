@@ -16,6 +16,7 @@
   <link rel="preload" href="assets/bai-sans.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="system.css">
   <script src="script.js" defer></script>
+  <script src="particles.js" defer></script>
   <title>白俊 Bai Jun · AI Agent &amp; Backend</title>
 </head>
 <body>
@@ -41,6 +42,10 @@
       <div class="hero-visual" aria-label="从基础设施、工作流到智能体的分层图示">
         <div class="visual-halo" aria-hidden="true"></div>
         <div class="visual-grid" aria-hidden="true"></div>
+        <canvas class="hero-particles" aria-hidden="true" hidden></canvas>
+        <button class="motion-toggle" type="button" aria-label="暂停粒子动效" title="暂停粒子动效" hidden>
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path class="motion-pause" d="M7 5v10M13 5v10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="motion-play" d="m7 4 9 6-9 6Z" fill="currentColor"/></svg>
+        </button>
         <svg class="stack-art" viewBox="0 0 600 520" fill="none" aria-hidden="true">
           <defs>
             <linearGradient id="base-top" x1="140" y1="290" x2="470" y2="460" gradientUnits="userSpaceOnUse"><stop stop-color="#f4fffc"/><stop offset=".52" stop-color="#bcefe3"/><stop offset="1" stop-color="#86cce2"/></linearGradient>

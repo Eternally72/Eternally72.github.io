@@ -26,6 +26,18 @@ try:
         browser = p.chromium.launch()
         context = browser.new_context(viewport={'width': 1440, 'height': 1000}, device_scale_factor=1)
         context.add_init_script("""window.__cls = 0; window.__longTasks = [];
+            window.__particleDraws = 0; window.__rafCalls = 0; window.__rafCosts = [];
+            const clear = CanvasRenderingContext2D.prototype.clearRect;
+            CanvasRenderingContext2D.prototype.clearRect = function (...args) {
+                if (this.canvas.matches('.hero-particles')) window.__particleDraws++;
+                return clear.apply(this, args);
+            };
+            const raf = window.requestAnimationFrame;
+            window.requestAnimationFrame = callback => raf.call(window, now => {
+                const start = performance.now(); window.__rafCalls++;
+                callback(now);
+                if (window.__rafCosts.length < 300) window.__rafCosts.push(performance.now() - start);
+            });
             new PerformanceObserver(list => { for (const e of list.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({type:'layout-shift', buffered:true});
             new PerformanceObserver(list => { for (const e of list.getEntries()) window.__longTasks.push(e.duration); }).observe({type:'longtask', buffered:true});""")
         page = context.new_page()
@@ -42,11 +54,63 @@ try:
         metrics = page.evaluate("""({cls: window.__cls, longTasks: window.__longTasks,
             requests: performance.getEntriesByType('resource').length,
             transferredBytes: performance.getEntriesByType('resource').reduce((n,e)=>n+e.transferSize,0)})""")
+        # Decorative particles must stop scheduling frames, not merely become invisible.
+        motion = page.locator('.motion-toggle')
+        assert motion.is_visible()
+        assert page.evaluate('window.__particleDraws') > 5
+        start = page.evaluate('({draws: __particleDraws, time: performance.now()})')
+        page.wait_for_timeout(1100)
+        particle_metrics = page.evaluate("""start => ({
+            fps: (__particleDraws - start.draws) / ((performance.now() - start.time) / 1000),
+            maxFrameMs: Math.max(...__rafCosts)
+        })""", start)
+        assert 5 < particle_metrics['fps'] <= 31, particle_metrics
+
+        def expect_particles_stopped():
+            page.wait_for_timeout(150)
+            before = page.evaluate('[__particleDraws, __rafCalls]')
+            page.wait_for_timeout(220)
+            assert page.evaluate('[__particleDraws, __rafCalls]') == before, 'Particles kept running while paused'
+
+        def expect_particles_running():
+            before = page.evaluate('__particleDraws')
+            page.wait_for_function('before => __particleDraws > before + 2', arg=before)
+
+        motion.click()
+        expect(motion).to_have_attribute('aria-label', '开启粒子动效')
+        expect_particles_stopped()
+        page.reload()
+        expect(page.locator('.motion-toggle')).to_have_attribute('aria-label', '开启粒子动效')
+        expect_particles_stopped()
+        page.locator('.motion-toggle').click()
+        expect_particles_running()
+        page.emulate_media(reduced_motion='reduce')
+        expect(page.locator('.hero-particles')).not_to_be_visible()
+        expect_particles_stopped()
+        page.reload()
+        expect_particles_stopped()
+        page.emulate_media(reduced_motion='no-preference')
+        expect_particles_running()
+        page.evaluate("scrollTo({top: document.body.scrollHeight, behavior: 'instant'})")
+        expect_particles_stopped()
+        page.evaluate("scrollTo({top: 0, behavior: 'instant'})")
+        expect_particles_running()
+        page.evaluate("Object.defineProperty(document, 'hidden', {configurable: true, value: true}); document.dispatchEvent(new Event('visibilitychange'))")
+        expect_particles_stopped()
+        page.evaluate("delete document.hidden; document.dispatchEvent(new Event('visibilitychange'))")
+        expect_particles_running()
+        page.evaluate("document.querySelector('#project-dialog').showModal()")
+        expect_particles_stopped()
+        page.evaluate("document.querySelector('#project-dialog').close()")
+        expect_particles_running()
         for width in [320, 360, 390, 620, 768, 820, 1024, 1440, 1920]:
             page.set_viewport_size({'width': width, 'height': 1000})
             page.wait_for_timeout(100)
             overflow = page.evaluate('document.documentElement.scrollWidth > innerWidth')
             assert not overflow, f'Horizontal overflow at {width}px'
+            control = page.locator('.motion-toggle').bounding_box()
+            label = page.locator('.label-infra').bounding_box()
+            assert control['y'] >= label['y'] + label['height'] + 4, f'Motion control overlaps label at {width}px'
         page.set_viewport_size({'width': 390, 'height': 844})
         menu = page.locator('.menu-toggle')
         assert menu.is_visible()
@@ -205,10 +269,12 @@ try:
         assert fallback.locator('#work h3').count() == 2
         assert fallback.locator('.detail-entry[href^="https://"]').count() == 6
         assert not fallback.locator('.copy-email').is_visible()
+        assert not fallback.locator('.motion-toggle').is_visible()
+        assert not fallback.locator('.hero-particles').is_visible()
         assert not fallback.evaluate('document.documentElement.scrollWidth > innerWidth')
         assert not errors, errors
         assert not failed, failed
-        print(json.dumps({'result':'passed', 'viewport_widths':[320,360,390,620,768,820,1024,1440,1920], 'metrics':metrics, 'details':details_metrics}, ensure_ascii=False))
+        print(json.dumps({'result':'passed', 'viewport_widths':[320,360,390,620,768,820,1024,1440,1920], 'metrics':metrics, 'particles':particle_metrics, 'details':details_metrics}, ensure_ascii=False))
         browser.close()
 finally:
     server.shutdown()

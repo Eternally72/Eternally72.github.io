@@ -32,10 +32,11 @@ assert.doesNotMatch(html, /(?:href|src)="[^"\n]*(?:dev\/|\.pdf)/, 'Private resum
 assert.match(css, /prefers-reduced-motion/, 'Reduced-motion support is missing');
 assert.match(css, /focus-visible/, 'Visible keyboard focus is missing');
 assert.match(read('.gitignore'), /(?:^|\n)\/?dev\/?(?:\n|$)/, 'dev must remain ignored');
-const runtimeBytes = ['index.html', 'system.css', 'script.js', 'assets/favicon.svg', 'assets/bai-sans.woff2']
+const runtimeBytes = ['index.html', 'system.css', 'script.js', 'particles.js', 'assets/favicon.svg', 'assets/bai-sans.woff2']
   .reduce((total, file) => total + statSync(resolve(root, file)).size, 0);
 assert.ok(runtimeBytes < 250_000, `Page exceeds 250 KB budget: ${runtimeBytes}`);
 assert.ok(statSync(resolve(root, 'script.js')).size < 8_000, 'JavaScript exceeds 8 KB budget');
+assert.ok(statSync(resolve(root, 'particles.js')).size < 6_000, 'Particles exceed 6 KB budget');
 console.log(`Site checks passed. Total local page resources: ${(runtimeBytes / 1024).toFixed(1)} KiB.`);
 
 // Preserve the platform branch explicitly: its implementation is not on main.
