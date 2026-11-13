@@ -94,17 +94,15 @@ try:
         expect_particles_stopped()
         page.emulate_media(reduced_motion='no-preference')
         expect_particles_running()
+        page.set_viewport_size({'width':1440,'height':400})
         page.evaluate("scrollTo({top: document.body.scrollHeight, behavior: 'instant'})")
         expect_particles_stopped()
         page.evaluate("scrollTo({top: 0, behavior: 'instant'})")
         expect_particles_running()
+        page.set_viewport_size({'width':1440,'height':1000})
         page.evaluate("Object.defineProperty(document, 'hidden', {configurable: true, value: true}); document.dispatchEvent(new Event('visibilitychange'))")
         expect_particles_stopped()
         page.evaluate("delete document.hidden; document.dispatchEvent(new Event('visibilitychange'))")
-        expect_particles_running()
-        page.evaluate("document.querySelector('#project-dialog').showModal()")
-        expect_particles_stopped()
-        page.evaluate("document.querySelector('#project-dialog').close()")
         expect_particles_running()
         for width in [320, 360, 390, 620, 768, 820, 1024, 1440, 1920]:
             page.set_viewport_size({'width': width, 'height': 1000})
@@ -125,13 +123,12 @@ try:
         assert menu.get_attribute('aria-expanded') == 'false'
         assert menu.evaluate('(el) => document.activeElement === el')
         menu.click()
-        page.locator('#nav-links a[href="#about"]').click()
-        page.wait_for_function("location.hash === '#about' && document.querySelector('#about').getBoundingClientRect().top >= -1 && document.querySelector('#about').getBoundingClientRect().top <= 100")
-        assert page.url.endswith('#about')
+        page.locator('#nav-links a[href="about.html"]').click()
+        expect(page.locator('#about h1')).to_be_visible()
+        assert page.url.endswith('about.html')
         assert not page.locator('#nav-links').is_visible()
-        assert -1 <= page.locator('#about').bounding_box()['y'] <= 100
         menu.click()
-        page.locator('#about h2').click()
+        page.locator('#about h1').click()
         assert menu.get_attribute('aria-expanded') == 'false'
         page.set_viewport_size({'width': 1440, 'height': 1000})
         assert page.locator('#nav-links').is_visible()
@@ -144,6 +141,7 @@ try:
         assert '复制未成功' in page.locator('.copy-status').inner_text()
         page.emulate_media(reduced_motion='reduce')
         assert page.locator('html').evaluate("el => getComputedStyle(el).scrollBehavior") == 'auto'
+        page.goto(url)
         assert page.locator('.hero-copy').evaluate("el => getComputedStyle(el).animationName") == 'none'
         page.emulate_media(reduced_motion='no-preference')
         page.goto(url)
@@ -160,6 +158,7 @@ try:
         page.set_viewport_size({'width':1440,'height':1000})
         dialog = page.locator('#project-dialog')
         for project in ['platform', 'review']:
+            page.goto(url + project + '.html')
             for view in ['architecture', 'sequence', 'results']:
                 entry = page.locator(f'.detail-entry[data-project="{project}"][data-view="{view}"]')
                 entry.scroll_into_view_if_needed()
@@ -196,6 +195,7 @@ try:
                 assert entry.evaluate('(el) => document.activeElement === el'), 'Focus did not return to opener'
                 assert abs(page.evaluate('scrollY') - scroll_before) <= 1, 'Background scroll position changed'
                 assert not page.locator('body').evaluate("el => el.classList.contains('details-open')")
+        page.goto(url + 'platform.html')
         page.locator('.detail-entry[data-project="platform"][data-view="architecture"]').click()
         expect(dialog.locator('.panel-heading')).to_be_visible()
         first_tab = dialog.locator('[role="tab"]').first
@@ -219,6 +219,7 @@ try:
         for width in [320,390,768]:
             page.set_viewport_size({'width':width,'height':844})
             for project in ['platform','review']:
+                page.goto(url + project + '.html')
                 page.locator(f'.detail-entry[data-project="{project}"][data-view="architecture"]').click()
                 expect(dialog.locator('.panel-heading')).to_be_visible()
                 for view in ['architecture','sequence','results']:
@@ -241,15 +242,15 @@ try:
         delayed = slow.new_page()
         held = []
         delayed.route('**/project-details.js', lambda route: held.append(route))
-        delayed.goto(url)
+        delayed.goto(url + 'platform.html')
         delayed.locator('.detail-entry[data-project="platform"]').first.click()
         expect(delayed.locator('.detail-loading')).to_be_visible()
         delayed.keyboard.press('Escape')
-        delayed.locator('.detail-entry[data-project="review"][data-view="results"]').click()
+        delayed.locator('.detail-entry[data-project="platform"][data-view="results"]').click()
         delayed.wait_for_timeout(100)
         assert len(held) == 1
         held[0].continue_()
-        expect(delayed.locator('#project-dialog')).to_have_attribute('data-project','review')
+        expect(delayed.locator('#project-dialog')).to_have_attribute('data-project','platform')
         expect(delayed.locator('[data-view="results"][role="tab"]')).to_have_attribute('aria-selected','true')
         delayed.keyboard.press('Escape')
         slow.close()
@@ -257,7 +258,7 @@ try:
         broken = browser.new_context()
         offline = broken.new_page()
         offline.route('**/project-details.js', lambda route: route.abort())
-        offline.goto(url)
+        offline.goto(url + 'platform.html')
         offline.locator('.detail-entry').first.click()
         expect(offline.locator('.detail-loading')).to_contain_text('暂时无法加载')
         assert '/feature/baijun/' in offline.locator('[data-project-source]').get_attribute('href')
@@ -269,12 +270,41 @@ try:
         fallback.goto(url)
         assert fallback.locator('#nav-links').is_visible(), 'Navigation unavailable without JS'
         assert fallback.locator('h1').is_visible()
-        assert fallback.locator('#work h3').count() == 2
-        assert fallback.locator('.detail-entry[href^="https://"]').count() == 6
+        assert fallback.locator('.home-project').count() == 3
         assert not fallback.locator('.copy-email').is_visible()
         assert not fallback.locator('.motion-toggle').is_visible()
         assert not fallback.locator('.hero-particles').is_visible()
         assert not fallback.evaluate('document.documentElement.scrollWidth > innerWidth')
+        # Every route loads directly, refreshes and fits desktop/tablet/mobile.
+        for file in ['index.html','projects.html','platform.html','review.html','memory.html','about.html']:
+            page.goto(url + file)
+            assert page.locator('h1').count() == 1
+            assert page.locator('#nav-links a[aria-current]').count() == 1
+            assert page.locator('body').inner_text().find('TiMEM') == -1
+            for width in [320,390,620,768,1024,1440,1920]:
+                page.set_viewport_size({'width':width,'height':1000})
+                assert not page.evaluate('document.documentElement.scrollWidth > innerWidth'), (file,width)
+                if args.screenshots and width in [390,1440]:
+                    page.evaluate('document.fonts.ready')
+                    page.screenshot(path=str(args.screenshots / f'{file}-{width}.png'),full_page=True,animations='disabled')
+            page.reload()
+            assert page.locator('h1').is_visible()
+            fallback.goto(url + file)
+            assert fallback.locator('h1').is_visible()
+            assert fallback.locator('#nav-links').is_visible()
+            assert not fallback.evaluate('document.documentElement.scrollWidth > innerWidth')
+            if file in ['platform.html','review.html']:
+                assert fallback.locator('.detail-entry[href^="https://"]').count() == 3
+        page.goto(url)
+        page.locator('.hero-actions a[href="projects.html"]').click()
+        page.locator('.catalog-feature h2 a').click()
+        expect(page.locator('h1')).to_have_text('mem-plugin 记忆服务')
+        page.locator('.reading-note summary').first.click()
+        assert page.locator('.reading-note').first.get_attribute('open') is not None
+        page.locator('.page-outline a[href="#memory-validation"]').click()
+        page.wait_for_function("location.hash === '#memory-validation'")
+        page.locator('.back-link').click()
+        assert page.url.endswith('projects.html')
         assert not errors, errors
         assert not failed, failed
         print(json.dumps({'result':'passed', 'viewport_widths':[320,360,390,620,768,820,1024,1440,1920], 'metrics':metrics, 'particles':particle_metrics, 'details':details_metrics}, ensure_ascii=False))

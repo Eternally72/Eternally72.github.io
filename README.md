@@ -1,80 +1,68 @@
 # 白俊的个人主页
 
-面向 GitHub Pages 的静态个人网站，展示个人背景、工程能力，以及两个代表项目：多租户 Agent 平台和基于 Skills / Docker 沙箱的自动代码审查 Agent。
+面向 GitHub Pages 的静态个人网站。首页展示简介与项目入口，项目列表、三个项目详情和个人背景分别独立成页。
 
-## 本地预览
+## 页面
+
+| 页面 | 内容 |
+| --- | --- |
+| `index.html` | 简介、分层主视觉、轻量粒子与三个项目入口 |
+| `projects.html` | mem-plugin、多租户 Agent 平台与自动代码审查 Agent 的概览 |
+| `memory.html` | 记忆服务架构、L0–L3 层级、混合检索、生命周期及验证边界 |
+| `platform.html` | 原有平台介绍、架构示意、历史测试与交互详情 |
+| `review.html` | 原有代码审查介绍、开源合并记录与交互详情 |
+| `about.html` | 原有教育背景、科研参与、技术栈及联系方式 |
+
+本次只新增 mem-plugin，依据本地 v1.0.0（2026-11-12）的源码与文档整理。该仓库目前为私有，页面不提供不可访问的源码入口。关于中文小语料、结构化过滤和租户隔离的集成验证与尚待完成的语义效果及大数据性能评测分开说明。
+
+多租户平台的全部源码与记录链接继续固定到 `feature/baijun`。4,028 次请求与 18 项可靠性场景保留为 2026-09 历史记录，不作为当前重新执行的测试结果。代码审查 PR #164 和原有个人、科研资料保持原有口径。
+
+## 编辑与预览
+
+正文源文件在 `site/`；导航、页脚、元信息和内联样式由 `scripts/build-site.mjs` 统一生成。修改正文、共享导航或 `system.css` 后运行：
 
 ```bash
+node scripts/build-site.mjs
 python3 -m http.server 4173
 ```
 
-打开 http://localhost:4173。也可以直接打开 `index.html`；复制邮箱功能需要 HTTPS 或 localhost，其他内容不依赖 JavaScript。
+打开 http://localhost:4173。生成的六个 HTML 已纳入版本控制，GitHub Pages 无需安装依赖或执行构建。`scripts/sync-styles.mjs` 保留为兼容入口。
 
-## 页面与内容
+- `script.js`：移动导航、复制邮箱、年份及项目详情弹窗管理。
+- `particles.js`：仅首页加载的轻量粒子与暂停管理。
+- `project-data.js`：原有两个项目的架构、时序与历史验证说明。
+- `project-details.js` / `project-details.css` / `project-diagrams.js`：打开详情时才加载的交互、样式与预制 SVG。
+- `assets/`：字体、图标和原有架构图；字体遵循 SIL OFL，保留 `assets/OFL.txt`。
+- `dev/`：被 Git 忽略的本地参考资料，不参与发布。
 
-- `index.html`：个人信息、项目介绍、架构示意、教育与科研经历、联系方式。
-- `system.css`：配色、字体、响应式布局、首屏入场和悬停反馈的唯一编辑源；同步到 HTML 内联样式后发布。
-- `script.js`：移动导航、当前章节提示、复制邮箱、页脚年份，以及项目详情的按需加载与弹窗管理。
-- `particles.js`：首屏分层图周围的轻量粒子、暂停控制与动画生命周期管理。
-- `project-data.js`：两个项目的组件说明、时序说明、验证数据及源码链接。
-- `project-details.js` / `project-details.css`：详情标签页、可点击的架构图、组件说明和验证结果展示。
-- `project-diagrams.js`：预先生成的 SVG 时序图，不依赖图表库。
-- `assets/`：本地图标、经过字符裁剪的 Noto Sans SC 可变字体及 SIL 许可。
-- `tests/`：静态资源检查、可选的真实浏览器测试。
-- `dev/`：本地参考资料，继续由 `.gitignore` 忽略，不参与发布。
-
-项目资料来自本地源码与文档，个人背景参考简历。多租户 Agent 平台的源码、文档和测试记录均链接到 `feature/baijun` 分支。代码审查项目 PR #164 的合并状态已于 2026-10-02 核对。平台的 4,028 次请求与 18 项可靠性场景来自 2026-09 历史测试记录；页面注明模拟 / 真实模型请求以及单机压测条件。项目中的界面图为流程示意。
-
-修改介绍和链接时直接编辑 HTML。修改 `system.css` 后运行 `node scripts/sync-styles.mjs`，将样式同步到 HTML；静态检查会阻止两者不一致。仓库提交了完整可发布文件，GitHub Pages 无需构建。新增中文字符如果不在字体子集中，会回退到访客的系统字体；大幅修改内容时可重新裁剪 Noto Sans SC。保留 `assets/OFL.txt`。
-
-## 项目详情
-
-每个项目有“架构设计、执行时序、验证结果”三个入口。点击后打开原生 dialog，桌面为居中弹窗，手机为全屏详情。架构节点可查看职责和源码，时序页可展开异常处理说明，验证页展示测试条件与记录入口。
-
-- 详情模块、样式和补充字体首次打开时才请求，后续打开复用已加载资源。
-- 没有 JavaScript、浏览器不支持 dialog 或使用 Ctrl / Command 点击时，入口直接打开对应 GitHub 文档。
-- 加载失败时显示文档入口；加载过程中关闭弹窗不会被异步响应重新打开。
-- 支持 Escape 关闭、点击遮罩关闭、焦点循环与返回入口；标签页支持方向键、Home、End。
-- 关闭后保留首页阅读位置，长图仅在图表区域内横向滚动。手机架构图适应宽度，组件说明位于图下方。
-- 多租户平台的所有源码与记录入口固定使用 `feature/baijun` 分支。
-
-详情中的结果为项目历史验证记录，不是访问主页时重新执行的测试。维护数字时同时更新样本条件与证据来源。
+字体已覆盖本次六个页面及弹窗使用的中文。增加字符时需要补齐字体子集，否则回退到访客的系统字体。
 
 ## 性能与可访问性
 
-原生 HTML、CSS、JavaScript，无框架、运行时第三方请求、外部字体服务或大型图片。主视觉用内联 SVG，章节导航通过 IntersectionObserver 更新。
+使用普通静态链接，每个页面可以直接访问和刷新，无需 JavaScript 路由。正文、图示和导航在禁用脚本时仍可阅读。所有页面均内联样式，避免外部样式请求挂起时阻止首次绘制；首屏文字不依赖入场动画结束才能显示。
 
-首页样式直接包含在 HTML 中，避免外部样式请求一直挂起时浏览器整页白屏。字体使用系统回退，正文不依赖脚本、字体下载或入场动画结束才显示。首屏动画只改变位置，不将文字设为透明。项目详情样式仍按需加载。
+粒子只在首页主视觉周围运行，窄屏减少数量，绘制上限 30 fps、像素密度上限 1.5。离屏、标签页隐藏时停止，支持暂停、保存偏好和系统减少动态效果设置。其他页面不加载粒子脚本。
 
-粒子只在首屏分层图周围缓慢流动：宽屏 24 个，窄屏 15 个，Canvas 绘制最多 30 fps，像素密度上限 1.5。鼠标靠近时轻微避让；触屏不追踪手势。离开可视区域、标签页隐藏或打开项目弹窗时取消动画帧，返回后继续。右下角按钮可暂停并记住偏好；系统开启“减少动态效果”时隐藏粒子及控制按钮。不引入粒子库、全屏画布或模糊滤镜。
-
-支持 320px 起的布局、键盘焦点、跳转到正文、减少动态效果偏好、无 JavaScript 阅读及导航。邮箱链接一直可用，复制按钮仅在支持剪贴板的安全上下文出现。
+原有两项目保留按需加载的原生 dialog：键盘标签切换、焦点循环、Escape / 遮罩关闭及关闭后焦点恢复；加载失败或禁用脚本时仍可打开对应 GitHub 文档。记忆服务使用原生 details 展开补充说明，页内目录适配手机。
 
 ## 检查
 
-基础检查仅需 Node.js：
-
 ```bash
+node scripts/build-site.mjs --check
 node tests/site-smoke.mjs
-node scripts/sync-styles.mjs --check
 node --check script.js
 node --check particles.js
 git diff --check
 ```
 
-浏览器检查为可选开发工具，需要 Python、Playwright 与 Chromium。使用 uv 可以在临时环境中运行：
+可选真实浏览器检查需要 Python、Playwright 与 Chromium：
 
 ```bash
 uv run --with playwright python -m playwright install chromium
 uv run --with playwright python tests/browser-check.py --screenshots /tmp/person-page-preview
 uv run --with playwright python tests/render-check.py
-uv run --with playwright python tests/render-check.py --url https://eternally72.github.io/
 ```
 
-测试会启动并关闭临时 HTTP 服务，检查 9 种首页屏幕宽度、导航与 Escape 交互、复制成功 / 失败、减少动态效果、无 JavaScript 回退、资源加载与浏览器错误；也覆盖六个详情入口、全部架构节点、标签页键盘切换、弹窗焦点和滚动恢复、手机布局、按需加载、慢请求切换及加载失败回退。粒子检查涵盖绘制帧率、暂停偏好保存、离屏 / 页面隐藏 / 弹窗打开时停止调度，以及动态切换系统动效偏好。截图输出到指定目录，不写入站点。
+静态检查覆盖六页资源、链接、跨页锚点、ARIA、分支链接、内容范围和单页资源预算。浏览器检查覆盖六页直接访问与刷新、320–1920px 布局、跨页导航、移动菜单、无脚本阅读、粒子暂停及原有弹窗交互。首次绘制检查覆盖资源挂起和暂停动画，避免只判断 DOM 存在而漏掉白屏。
 
-`render-check.py` 检查真正的首次内容绘制，而非只判断 DOM 存在。覆盖样式请求挂起、全部子资源挂起，以及入场动画停在起点的场景；`--url` 可对线上部署执行相同检查。
-
-## 发布
-
-将网站文件提交并推送到 GitHub Pages 仓库。在仓库 Settings → Pages 中选择对应分支及根目录即可，无需构建工作流。发布时不要复制 `dev/` 或本地测试工具到公开资源中。
+发布后可追加 `--url https://eternally72.github.io/` 对线上版本运行相同检查。将生成后的文件推送到 GitHub Pages 对应分支即可发布。

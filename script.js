@@ -33,26 +33,6 @@ if (menuButton && menu) {
   mobile.addEventListener('change', () => closeMenu());
 }
 
-const links = [...document.querySelectorAll('.nav-links a[href^="#"]')];
-if ('IntersectionObserver' in window) {
-  const observer = new IntersectionObserver((entries) => {
-    for (const entry of entries) {
-      if (entry.isIntersecting) {
-        links.forEach((link) => {
-          if (link.hash === `#${entry.target.id}`) link.setAttribute('aria-current', 'location');
-          else link.removeAttribute('aria-current');
-        });
-      } else {
-        links.find((link) => link.hash === `#${entry.target.id}`)?.removeAttribute('aria-current');
-      }
-    }
-  }, { rootMargin: '-15% 0px -65% 0px', threshold: 0 });
-  links.forEach((link) => {
-    const section = document.querySelector(link.hash);
-    if (section) observer.observe(section);
-  });
-}
-
 const copyButton = document.querySelector('.copy-email');
 const copyStatus = document.querySelector('.copy-status');
 if (copyButton && copyStatus && navigator.clipboard?.writeText && window.isSecureContext) {
